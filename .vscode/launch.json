@@ -8,7 +8,7 @@
       "name": "Launch Server",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "build",
+      "preLaunchTask": "buildServer",
       // If you have changed target frameworks, make sure to update the program path.
       "program": "${workspaceFolder}/Server/bin/Debug/net7.0/Server.dll",
       "args": [],
@@ -24,7 +24,7 @@
       "name": "Launch Client",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "build",
+      "preLaunchTask": "buildClient",
       // If you have changed target frameworks, make sure to update the program path.
       "program": "${workspaceFolder}/Client/bin/Debug/net7.0/Client.dll",
       "args": [],
