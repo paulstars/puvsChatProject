@@ -10,7 +10,7 @@ namespace Data
         
         public void newName(string name){
             if (names.Contains(name)){
-                throw new Exception("${name} wird bereits von jemand anderem benutzt!") ;
+                throw new Exception($"{name} wird bereits von jemand anderem benutzt!") ;
             }else
             {
                 names.Add(name);
@@ -29,7 +29,7 @@ namespace Data
         public void removeName(string name){
             if (!names.Contains(name))
             {
-                throw new Exception("${name} wird nicht benutzt!") ;
+                throw new Exception($"{name} wird nicht benutzt!") ;
             }else
             {
                 names.Remove(name);
