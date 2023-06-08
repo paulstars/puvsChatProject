@@ -19,3 +19,10 @@ Bei der Eingabe eines Namens soll überprüft werden, ob dieser bereits vergeben
 
 Zuständig: Paul Steinke
 Lösung:
+
+## Mitglieder anzeigen
+
+Beim Joinen des Chats werden die aktuellen Mitglieder angezeigt.
+
+Zuständig:
+Lösung:
