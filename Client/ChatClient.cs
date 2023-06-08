@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Xml.Linq;
 using Data;
 
 namespace Client;
@@ -17,6 +18,7 @@ public class ChatClient
     /// The alias of the user
     /// </summary>
     private readonly string alias;
+    private readonly string color;
 
     /// <summary>
     /// The cancellation token source for the listening task
@@ -28,9 +30,10 @@ public class ChatClient
     /// </summary>
     /// <param name="alias">The alias of the user.</param>
     /// <param name="serverUri">The server URI.</param>
-    public ChatClient(string alias, Uri serverUri)
+    public ChatClient(string alias,string color, Uri serverUri)
     {
         this.alias = alias;
+        this.color = color;
         this.httpClient = new HttpClient();
         this.httpClient.BaseAddress = serverUri;
     }
@@ -42,8 +45,9 @@ public class ChatClient
     public async Task<bool> Connect()
     {
         // create and send a welcome message
-        var message = new ChatMessage { Sender = this.alias, Content = $"Hi, I joined the chat!" };
+        var message = new ChatMessage { Sender = this.alias, Content = $"Hi, I joined the chat!", Color = this.color};
         var response = await this.httpClient.PostAsJsonAsync("/messages", message);
+ 
 
         return response.IsSuccessStatusCode;
     }
@@ -56,7 +60,7 @@ public class ChatClient
     public async Task<bool> SendMessage(string content)
     {
         // creates the message and sends it to the server
-        var message = new ChatMessage { Sender = this.alias, Content = content };
+        var message = new ChatMessage { Sender = this.alias, Content = content, Color = this.color };
         var response = await this.httpClient.PostAsJsonAsync("/messages", message);
 
         return response.IsSuccessStatusCode;
@@ -80,13 +84,13 @@ public class ChatClient
                 // if a new message was received notify the user
                 if (message != null)
                 {
-                    this.OnMessageReceived(message.Sender, message.Content);
+                    this.OnMessageReceived(message.Sender, message.Content, message.Color);
                 }
             }
             catch (TaskCanceledException) when (cancellationToken.IsCancellationRequested)
             {
                 // catch the cancellation 
-                this.OnMessageReceived("Me", "Leaving the chat");
+                this.OnMessageReceived("Me", "Leaving the chat", "White");
                 break;
             }
         }
@@ -109,8 +113,8 @@ public class ChatClient
     /// </summary>
     /// <param name="sender">The alias of the sender.</param>
     /// <param name="message">The containing message as text.</param>
-    protected virtual void OnMessageReceived(string sender, string message)
+    protected virtual void OnMessageReceived(string sender, string message, string color)
     {
-        this.MessageReceived?.Invoke(this, new MessageReceivedEventArgs { Sender = sender, Message = message });
+        this.MessageReceived?.Invoke(this, new MessageReceivedEventArgs { Sender = sender, Message = message, Color = color });
     }
 }

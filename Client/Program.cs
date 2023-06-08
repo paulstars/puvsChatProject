@@ -1,21 +1,30 @@
-﻿namespace Client;
+﻿using System.Security.Cryptography.X509Certificates;
+
+namespace Client;
 
 /// <summary>
 /// A most basic chat client for the console
 /// </summary>
 public class Program
-{
+{public static string currentColor;
     public static async Task Main(string[] args)
     {
+        TextSnipplets ts = new TextSnipplets();
+        ColorSettings cs = new ColorSettings();
         var serverUri = new Uri("http://localhost:5000");
-
+        
         // query the user for a name
-        Console.Write("Geben Sie Ihren Namen ein: ");
-        var sender = Console.ReadLine() ?? Guid.NewGuid().ToString();
+        ts.Welcome();
+        
+        string currentSender = Console.ReadLine() ?? Guid.NewGuid().ToString();
+
+        ts.DotLine();
+        string color = cs.ColorSelection();
+        ts.HaveFun(color, currentSender);
         Console.WriteLine();
 
         // create a new client and connect the event handler for the received messages
-        var client = new ChatClient(sender, serverUri);
+        var client = new ChatClient(currentSender, color, serverUri);
         client.MessageReceived += MessageReceivedHandler;
 
         // connect to the server and start listening for messages
@@ -25,7 +34,7 @@ public class Program
         // query the user for messages to send or the exit command
         while (true)
         {
-            Console.Write("Geben Sie Ihre Nachricht ein (oder 'exit' zum Beenden): ");
+            //Console.Write("Geben Sie Ihre Nachricht ein (oder 'exit' zum Beenden): ");
             var content = Console.ReadLine() ?? string.Empty;
 
             // cancel the listening task and exit the loop
@@ -61,6 +70,10 @@ public class Program
     /// <param name="e">The <see cref="MessageReceivedEventArgs"/> instance containing the event data.</param>
     static void MessageReceivedHandler(object? sender, MessageReceivedEventArgs e)
     {
-        Console.WriteLine($"\nReceived new message from {e.Sender}: {e.Message}");
+        ColorSettings cs = new ColorSettings();
+        cs.setColor(e.Color);
+        Console.Write(e.Sender);
+        cs.setColor("White");
+        Console.WriteLine($": {e.Message}");
     }
 }
