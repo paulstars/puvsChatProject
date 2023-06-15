@@ -5,8 +5,8 @@ namespace Client;
 /// <summary>
 /// A most basic chat client for the console
 /// </summary>
-public class Program
-{public static string currentColor;
+public class Program{
+
     public static async Task Main(string[] args)
     {
         TextSnipplets ts = new TextSnipplets();

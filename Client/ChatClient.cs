@@ -78,8 +78,10 @@ public class ChatClient
         {
             try
             {
+                string url = $"/messages?id={this.alias}&color={this.color}";
+
                 // listening for messages. possibly waits for a long time.
-                var message = await this.httpClient.GetFromJsonAsync<ChatMessage>($"/messages?id={this.alias}", cancellationToken);
+                var message = await this.httpClient.GetFromJsonAsync<ChatMessage>(url, cancellationToken);
 
                 // if a new message was received notify the user
                 if (message != null)

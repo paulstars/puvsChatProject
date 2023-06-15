@@ -1,26 +1,13 @@
-﻿﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Channels;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace Client
+﻿namespace Client
 {
     internal class TextSnipplets
     {
 
         public void Welcome()
         {
-            string a = "Wilkommen im Chat.";
-            string b = "Erzähle uns zunächst etwas über dich";
-            string c = "Wie heißt du?";
-
-            Console.WriteLine(a);
-            Console.WriteLine(b);
-            Console.WriteLine(c);
-            
+            System.Console.WriteLine("Wilkommen im Chat.");
+            System.Console.WriteLine("Erzähle uns zunächst etwas über dich");
+            System.Console.WriteLine("Wie heißt du?");            
         }
 
         public void DotLine()
@@ -34,18 +21,12 @@ namespace Client
 
             Console.WriteLine("");
         }
-
-        public void Name()
-        {
-            string a = "Wie heißt du?";
-            Console.WriteLine(a);
-        }
-
+        
         public void HaveFun(string color, string alias)
         {
             ColorSettings cs = new ColorSettings();
 
-            Console.Clear();
+            //Console.Clear();
             Console.Write("Viel spaß beim Chatten ");
             cs.setColor(color);
             Console.Write(alias);

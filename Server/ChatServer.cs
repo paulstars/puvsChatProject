@@ -22,6 +22,11 @@ public class ChatServer
     private readonly ConcurrentDictionary<string, TaskCompletionSource<ChatMessage>> waitingClients = new();
 
     /// <summary>
+    /// Status of the Colors. (used/unsused)
+    /// </summary>
+    List<string> usedColors = new List<string>();
+                    
+    /// <summary>
     /// The lock object for concurrency
     /// </summary>
     private readonly object lockObject = new();
@@ -41,13 +46,33 @@ public class ChatServer
             endpoints.MapGet("/messages", async context =>
             {
                 var tcs = new TaskCompletionSource<ChatMessage>();
+                context.Request.Query.TryGetValue("Color", out var rawColor);
+                string color = rawColor.ToString();
 
+                /* if (!Enum.TryParse<ConsoleColor>(color,out _))
+                {
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    await context.Response.WriteAsync("Es handelt sich um keine benutzbare Farbe.");
+                    return;
+                }
+
+                if (usedColors.Contains(color)){
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    await context.Response.WriteAsync("Die Farbe wird zurzeit verwendet");
+                    return;
+                }
+                else
+                {
+                    usedColors.Add(color);
+                } */
+                
                 context.Request.Query.TryGetValue("id", out var rawId);
 
                 var id = rawId.ToString();
-
+            
                 Console.WriteLine($"Client '{id}' registered");
 
+                
                 // register a client to receive the next message
                 var error = true;
                 lock (this.lockObject)
@@ -68,6 +93,7 @@ public class ChatServer
 
                     // You could replace all of the above with just one line...
                     //this.waitingClients.AddOrUpdate(id.ToString(), tcs, (_, _) => tcs);
+                    
                 }
 
                 // if anything went wrong send out an error message
@@ -77,6 +103,8 @@ public class ChatServer
                     await context.Response.WriteAsync("Internal server error.");
                 }
 
+                
+ 
                 // otherwise wait for the next message broadcast
                 var message = await tcs.Task;
 
