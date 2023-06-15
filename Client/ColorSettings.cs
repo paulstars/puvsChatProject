@@ -9,7 +9,7 @@ namespace Client
     internal class ColorSettings
     {
         TextSnipplets ts = new TextSnipplets();
-        public static string? colorChoice;
+
         public void setColor(string selection)
         {
             if (Enum.TryParse(selection, true, out ConsoleColor color))
