@@ -10,12 +10,23 @@ namespace Server
     {
         private readonly Dictionary<string, string> users = new Dictionary<string, string>();
 
+       /// <summary>
+       ///  Checks if a user with this key and name exists.
+       /// </summary>
+       /// <param name="key">Unique Key of this user.</param>
+       /// <param name="name">The name of a user.</param>
+       /// <returns>Is registered: true or false</returns>
+        public bool CheckUser(string key, string name)
+        {
+            if (!this.CheckKey(key)) return false;
+            this.users.TryGetValue(key, out var value);
+            return value == name;
+        }
 
         /// <summary>
         /// Checks if a user with this name and key is registered.
         /// </summary>
-        /// <param name="key">Unique Key of this user</param>
-        /// <param name="name">Name of this user</param>
+        /// <param name="key">Unique Key of this user.</param>
         /// <returns>Is registered: true or false</returns>
         public bool CheckKey(string key)
         {
@@ -29,7 +40,7 @@ namespace Server
         /// <summary>
         /// Checks if the given name is registered or not.
         /// </summary>
-        /// <param name="name">The name of a user</param>
+        /// <param name="name">The name of a user.</param>
         /// <returns>Is registered: true or false</returns>
         public bool CheckName(string name)
         {

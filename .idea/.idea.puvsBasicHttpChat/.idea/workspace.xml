@@ -8,7 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9f92d166-e55f-4550-95f6-45d26b7fc873" name="Changes" comment="">
+    <list default="true" id="9f92d166-e55f-4550-95f6-45d26b7fc873" name="Changes" comment="Clients wird nun ein key zugeordnet">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.puvsBasicHttpChat/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.puvsBasicHttpChat/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/ChatClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ChatClient.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/ChatServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/ChatServer.cs" afterDir="false" />
@@ -43,7 +43,6 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/20456726229d3ee357e828f8174bacdc1a91389d491c898bd593e51b6e9732/HttpResponseJsonExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/pauls/Documents/GitHub/puvsChatProject/Client/ChatClient.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/pauls/Documents/GitHub/puvsChatProject/Server/UserDict.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -90,7 +89,7 @@
       <workItem from="1686828178559" duration="183000" />
       <workItem from="1686828433347" duration="561000" />
       <workItem from="1686829018290" duration="14729000" />
-      <workItem from="1686847125135" duration="11580000" />
+      <workItem from="1686847125135" duration="13509000" />
     </task>
     <task id="LOCAL-00001" summary="Rider IDE Initialisiert">
       <created>1686828304437</created>
@@ -127,7 +126,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686845160655</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Clients wird nun ein key zugeordnet">
+      <created>1686859850877</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1686859850877</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -141,7 +147,8 @@
     <MESSAGE value="Rider IDE Start" />
     <MESSAGE value="Anlegen des Dicts" />
     <MESSAGE value="Weitere Änderungen" />
-    <option name="LAST_COMMIT_MESSAGE" value="Weitere Änderungen" />
+    <MESSAGE value="Clients wird nun ein key zugeordnet" />
+    <option name="LAST_COMMIT_MESSAGE" value="Clients wird nun ein key zugeordnet" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
