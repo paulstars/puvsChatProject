@@ -26,6 +26,8 @@ public class ChatServer
     /// </summary>
     private readonly object lockObject = new();
 
+    private UserDict users = new UserDict();
+
     /// <summary>
     /// Configures the web services.
     /// </summary>
@@ -45,8 +47,19 @@ public class ChatServer
                 context.Request.Query.TryGetValue("id", out var rawId);
 
                 var id = rawId.ToString();
+                var key = Convert.ToString(Guid.NewGuid());
 
-                Console.WriteLine($"Client '{id}' registered");
+                //Try to register a new user in the dictionary and save its status.
+                var newUserStatus = this.users.NewUser(key, id);
+                
+                //Tell the client that the chosen name is already in use.
+                if (!newUserStatus)
+                {
+                    context.Response.StatusCode = StatusCodes.Status409Conflict;
+                    await context.Response.WriteAsync($"User '{id}' is already in use!");
+                }
+
+                await context.Response.WriteAsJsonAsync(key);
 
                 // register a client to receive the next message
                 var error = true;

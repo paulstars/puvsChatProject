@@ -17,6 +17,11 @@ public class ChatClient
     /// The alias of the user
     /// </summary>
     private readonly string alias;
+    
+    /// <summary>
+    /// The unique key of the user for identification
+    /// </summary>
+    private string key;
 
     /// <summary>
     /// The cancellation token source for the listening task
@@ -42,7 +47,7 @@ public class ChatClient
     public async Task<bool> Connect()
     {
         // create and send a welcome message
-        var message = new ChatMessage { Sender = this.alias, Content = $"Hi, I joined the chat!" };
+        var message = new ChatMessage { Sender = this.alias, Content = $"Hi, I joined the chat!" , Key = "-1"};
         var response = await this.httpClient.PostAsJsonAsync("/messages", message);
 
         return response.IsSuccessStatusCode;
@@ -56,7 +61,7 @@ public class ChatClient
     public async Task<bool> SendMessage(string content)
     {
         // creates the message and sends it to the server
-        var message = new ChatMessage { Sender = this.alias, Content = content };
+        var message = new ChatMessage { Sender = this.alias, Content = content , Key = this.key};
         var response = await this.httpClient.PostAsJsonAsync("/messages", message);
 
         return response.IsSuccessStatusCode;

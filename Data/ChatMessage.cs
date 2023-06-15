@@ -7,6 +7,6 @@
     {
         public required string Sender { get; set; }
         public required string Content { get; set; }
-        public required string Key { get; set; } = "-1";
+        public required string Key { get; set; }
     }
 }
