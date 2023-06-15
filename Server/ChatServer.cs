@@ -45,21 +45,27 @@ public class ChatServer
                 var tcs = new TaskCompletionSource<ChatMessage>();
 
                 context.Request.Query.TryGetValue("id", out var rawId);
+                context.Request.Query.TryGetValue("key", out var rawKey);
 
                 var id = rawId.ToString();
-                var key = Convert.ToString(Guid.NewGuid());
+                var key = rawKey.ToString();
+                var checkKey = this.users.CheckKey(key);
+                var checkName = this.users.CheckName(id);
 
-                //Try to register a new user in the dictionary and save its status.
-                var newUserStatus = this.users.NewUser(key, id);
-                
-                //Tell the client that the chosen name is already in use.
-                if (!newUserStatus)
+                // Tell the client if the chosen name is already in use.
+                if (!checkKey && checkName)
                 {
                     context.Response.StatusCode = StatusCodes.Status409Conflict;
                     await context.Response.WriteAsync($"User '{id}' is already in use!");
                 }
+                
+                // Try to register a new user in the dictionary if it does not already exist.
+                if (!checkKey && !checkName)
+                {
+                    key = this.users.AddUser(id);
+                    await context.Response.WriteAsJsonAsync(key);
+                }
 
-                await context.Response.WriteAsJsonAsync(key);
 
                 // register a client to receive the next message
                 var error = true;
@@ -92,6 +98,12 @@ public class ChatServer
 
                 // otherwise wait for the next message broadcast
                 var message = await tcs.Task;
+                
+                // save the key in message
+                Console.WriteLine("VORHER: " + message.Key);
+                message.Key = key;
+                Console.WriteLine("NACHHER: " + message.Key);
+
 
                 Console.WriteLine($"Client '{id}' received message: {message.Content}");
 

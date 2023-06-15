@@ -8,8 +8,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9f92d166-e55f-4550-95f6-45d26b7fc873" name="Changes" comment="Anlegen des Dicts">
+    <list default="true" id="9f92d166-e55f-4550-95f6-45d26b7fc873" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.puvsBasicHttpChat/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.puvsBasicHttpChat/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/ChatClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ChatClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/ChatServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/ChatServer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/UserDict.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/UserDict.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -41,6 +43,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/20456726229d3ee357e828f8174bacdc1a91389d491c898bd593e51b6e9732/HttpResponseJsonExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/pauls/Documents/GitHub/puvsChatProject/Client/ChatClient.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/pauls/Documents/GitHub/puvsChatProject/Server/UserDict.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -62,7 +65,7 @@
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "ReSpellerSettingsId",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -86,7 +89,8 @@
       <workItem from="1686827889510" duration="274000" />
       <workItem from="1686828178559" duration="183000" />
       <workItem from="1686828433347" duration="561000" />
-      <workItem from="1686829018290" duration="14344000" />
+      <workItem from="1686829018290" duration="14729000" />
+      <workItem from="1686847125135" duration="11580000" />
     </task>
     <task id="LOCAL-00001" summary="Rider IDE Initialisiert">
       <created>1686828304437</created>
@@ -116,7 +120,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686843456776</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Weitere Änderungen">
+      <created>1686845160655</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1686845160655</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -129,7 +140,8 @@
     <MESSAGE value="Rider Configurations" />
     <MESSAGE value="Rider IDE Start" />
     <MESSAGE value="Anlegen des Dicts" />
-    <option name="LAST_COMMIT_MESSAGE" value="Anlegen des Dicts" />
+    <MESSAGE value="Weitere Änderungen" />
+    <option name="LAST_COMMIT_MESSAGE" value="Weitere Änderungen" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

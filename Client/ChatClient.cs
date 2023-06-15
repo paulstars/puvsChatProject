@@ -36,6 +36,7 @@ public class ChatClient
     public ChatClient(string alias, Uri serverUri)
     {
         this.alias = alias;
+        this.key = "-1";
         this.httpClient = new HttpClient();
         this.httpClient.BaseAddress = serverUri;
     }
@@ -47,7 +48,7 @@ public class ChatClient
     public async Task<bool> Connect()
     {
         // create and send a welcome message
-        var message = new ChatMessage { Sender = this.alias, Content = $"Hi, I joined the chat!" , Key = "-1"};
+        var message = new ChatMessage { Sender = this.alias, Content = $"Hi, I joined the chat!" , Key = this.key};
         var response = await this.httpClient.PostAsJsonAsync("/messages", message);
 
         return response.IsSuccessStatusCode;
@@ -80,11 +81,12 @@ public class ChatClient
             try
             {
                 // listening for messages. possibly waits for a long time.
-                var message = await this.httpClient.GetFromJsonAsync<ChatMessage>($"/messages?id={this.alias}", cancellationToken);
+                var message = await this.httpClient.GetFromJsonAsync<ChatMessage>($"/messages?id={this.alias}&key={this.key}", cancellationToken);
 
                 // if a new message was received notify the user
                 if (message != null)
                 {
+                    this.key = message.Key;
                     this.OnMessageReceived(message.Sender, message.Content);
                 }
             }
