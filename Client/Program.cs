@@ -1,4 +1,9 @@
 ﻿using System.Security.Cryptography.X509Certificates;
+using Microsoft.VisualBasic;
+using System;
+using System.Threading.Tasks;
+using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace Client;
 
@@ -11,6 +16,7 @@ public class Program{
     {
         TextSnipplets ts = new TextSnipplets();
         ColorSettings cs = new ColorSettings();
+
         var serverUri = new Uri("http://localhost:5000");
         
         // query the user for a name
@@ -36,6 +42,10 @@ public class Program{
         {
             //Console.Write("Geben Sie Ihre Nachricht ein (oder 'exit' zum Beenden): ");
             var content = Console.ReadLine() ?? string.Empty;
+            
+            //Moves the curser up by one, in order to remove the entered Text   
+            var curser = Console.GetCursorPosition();
+            Console.SetCursorPosition(0,curser.Top-1);
 
             // cancel the listening task and exit the loop
             if (content.ToLower() == "exit")
@@ -44,12 +54,12 @@ public class Program{
                 break;
             }
 
-            Console.WriteLine($"Sending message: {content}");
+            //Console.WriteLine($"Sending message: {content}");
 
             // send the message and display the result
             if (await client.SendMessage(content))
             {
-                Console.WriteLine("Message sent successfully.");
+                //Console.WriteLine("Message sent successfully.");
             }
             else
             {
@@ -71,6 +81,9 @@ public class Program{
     static void MessageReceivedHandler(object? sender, MessageReceivedEventArgs e)
     {
         ColorSettings cs = new ColorSettings();
+        string time = DateTime.Now.ToString().Remove(0,11).Remove(5,3);
+        Console.Write($"[{time}] ");
+        
         cs.setColor(e.Color);
         Console.Write(e.Sender);
         cs.setColor("White");

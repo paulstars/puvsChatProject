@@ -2,6 +2,8 @@
 using Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace Server;
 
@@ -49,23 +51,6 @@ public class ChatServer
                 context.Request.Query.TryGetValue("Color", out var rawColor);
                 string color = rawColor.ToString();
 
-                /* if (!Enum.TryParse<ConsoleColor>(color,out _))
-                {
-                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    await context.Response.WriteAsync("Es handelt sich um keine benutzbare Farbe.");
-                    return;
-                }
-
-                if (usedColors.Contains(color)){
-                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    await context.Response.WriteAsync("Die Farbe wird zurzeit verwendet");
-                    return;
-                }
-                else
-                {
-                    usedColors.Add(color);
-                } */
-                
                 context.Request.Query.TryGetValue("id", out var rawId);
 
                 var id = rawId.ToString();
@@ -103,11 +88,51 @@ public class ChatServer
                     await context.Response.WriteAsync("Internal server error.");
                 }
 
-                
- 
                 // otherwise wait for the next message broadcast
+
+                
+                
+                Timer timer = new Timer();
+                timer.Interval = 30000;
+                timer.AutoReset = false;
+                timer.Elapsed += TimeOut;
+                
+                timer.Start();
+                bool timeOut = true;
+                
                 var message = await tcs.Task;
 
+                void TimeOut(object sender, ElapsedEventArgs e)
+                {
+
+                    // Erzeugen Sie eine Nachricht für den Timeout
+
+                    var timeoutMessage = new ChatMessage
+                    {
+                        Sender = "System",
+                        Content = "AFK-Warnung!",
+                        Color = "white"
+                    };
+
+                    Console.WriteLine("Zu lange nichts gesendet. Verschicke Warnung");
+
+                    // Broadcast der Timeout-Nachricht an alle registrierten Clients
+                    lock (lockObject)
+                    {
+
+                        foreach (var (_, client) in waitingClients)
+                        {
+                            // Setzen Sie das Ergebnis der TaskCompletionSource auf die Timeout-Nachricht
+                            client.TrySetResult(timeoutMessage);
+                        }
+                    }
+
+
+                }
+
+                timer.Stop();
+                timer.Close();
+                
                 Console.WriteLine($"Client '{id}' received message: {message.Content}");
 
                 // send out the next message
