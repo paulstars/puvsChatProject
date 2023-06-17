@@ -27,6 +27,9 @@ public class ChatServer
     private readonly object lockObject = new();
 
     private UserDict users = new UserDict();
+    
+    private LogWriter logWriter = new LogWriter();
+
 
     /// <summary>
     /// Configures the web services.
@@ -49,14 +52,33 @@ public class ChatServer
 
                 var id = rawId.ToString();
                 var key = rawKey.ToString();
+                var checkKey = this.users.CheckKey(key);
+                var checkName = this.users.CheckName(id);
+                var checkUser = this.users.CheckUser(key, id);
                 
-                // Check if user is registered!
-                if (!this.users.CheckUser(key, id))
+                // Check if user exists
+                switch (checkUser)
                 {
-                    context.Response.StatusCode = StatusCodes.Status409Conflict;
-                    await context.Response.WriteAsync("User invalid!");
+                    // Tell the client if the chosen name is already in use.
+                    case false when !checkKey && checkName:
+                        context.Response.StatusCode = StatusCodes.Status409Conflict;
+                        await context.Response.WriteAsync($"User '{id}' is already in use!");
+                        break;
+                    
+                    // Try to register a new user in the dictionary if it does not already exist.
+                    case false when !checkKey && !checkName:
+                        key = this.users.AddUser(id);
+                        break;
+                    
+                    // Verify existing user
+                    case true:
+                        lock (this.lockObject)
+                        {
+                            this.logWriter.WriteLogLine($"'{id}' successfully verified!");
+                        }
+                        break;
                 }
-                
+
                 // register a client to receive the next message
                 var error = true;
                 lock (this.lockObject)
@@ -65,13 +87,13 @@ public class ChatServer
                     {
                         if (this.waitingClients.TryRemove(id, out _))
                         {
-                            Console.WriteLine($"Client '{id}' removed from waiting clients");
+                            this.logWriter.WriteLogLine($"Client '{id}' removed from waiting clients");
                         }
                     }
 
                     if (this.waitingClients.TryAdd(id, tcs))
                     {
-                        Console.WriteLine($"Client '{id}' added to waiting clients");
+                        this.logWriter.WriteLogLine($"Client '{id}' added to waiting clients");
                         error = false;
                     }
 
@@ -88,14 +110,17 @@ public class ChatServer
 
                 // otherwise wait for the next message broadcast
                 var message = await tcs.Task;
-                
-                // save the key in message
-                Console.WriteLine("VORHER: " + message.Key);
-                message.Key = key;
-                Console.WriteLine("NACHHER: " + message.Key);
+
+                lock (this.lockObject)
+                {
+                    // save the key in message
+                    this.logWriter.WriteLogLine("VORHER: " + message.Key);
+                    message.Key = key;
+                    this.logWriter.WriteLogLine("NACHHER: " + message.Key);
+                    this.logWriter.WriteLogLine($"Client '{id}' received message: {message.Content}");
+                }
 
 
-                Console.WriteLine($"Client '{id}' received message: {message.Content}");
 
                 // send out the next message
                 await context.Response.WriteAsJsonAsync(message);
@@ -111,27 +136,21 @@ public class ChatServer
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
                     await context.Response.WriteAsync("Message invalid.");
                 }
-
+                
                 var sender = message?.Sender;
                 var key = message?.Key;
-                Console.WriteLine($"Received message from client: {message!.Content} with key '{key}'");
-
-                var checkKey = this.users.CheckKey(key);
-                var checkName = this.users.CheckName(sender);
-
-                // Tell the client if the chosen name is already in use.
-                if (!checkKey && checkName)
+                
+                // // Check if user is registered!
+                // if (!this.users.CheckUser(key, sender))
+                // {
+                //     context.Response.StatusCode = StatusCodes.Status409Conflict;
+                //     await context.Response.WriteAsync("User invalid!");
+                // }
+                lock (this.lockObject)
                 {
-                    context.Response.StatusCode = StatusCodes.Status409Conflict;
-                    await context.Response.WriteAsync($"User '{sender}' is already in use!");
+                    this.logWriter.WriteLogLine($"Received message from client('{sender}'): '{message!.Content}' with key '{key}'");
                 }
                 
-                // Try to register a new user in the dictionary if it does not already exist.
-                if (!checkKey && !checkName)
-                {
-                    key = this.users.AddUser(sender);
-                }
-
                 // maintain the chat history
                 this.messageQueue.Enqueue(message);
 
@@ -140,18 +159,18 @@ public class ChatServer
                 {
                     foreach (var (id, client) in this.waitingClients)
                     {
-                        Console.WriteLine($"Broadcasting to client '{id}'");
+                        this.logWriter.WriteLogLine($"Broadcasting to client '{id}'");
 
                         // possbile memory leak as the 'dead' clients are never removed from the list
                         client.TrySetResult(message);
                     }
+                    
+                    this.logWriter.WriteLogLine($"Broadcasted message to all clients: {message.Content}");
                 }
-
-                Console.WriteLine($"Broadcasted message to all clients: {message.Content}");
-
+                
                 // confirm that the new message was successfully processed
                 context.Response.StatusCode = StatusCodes.Status201Created;
-                await context.Response.WriteAsync($"{key}");
+                await context.Response.WriteAsync("Message successfully processed!");
             });
         });
     }

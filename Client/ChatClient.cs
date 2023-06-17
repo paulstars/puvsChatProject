@@ -50,10 +50,6 @@ public class ChatClient
         // create and send a welcome message
         var message = new ChatMessage { Sender = this.alias, Content = $"Hi, I joined the chat!" , Key = this.key};
         var response = await this.httpClient.PostAsJsonAsync("/messages", message);
-        if (response.IsSuccessStatusCode)
-        {
-            this.key = response.ToString();
-        }
 
         return response.IsSuccessStatusCode;
     }

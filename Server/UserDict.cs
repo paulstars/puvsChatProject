@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Server
 {
+
     /// <summary>
     /// A List including the Names of all active Users and their Client Key.
     /// </summary>
     public class UserDict
     {
+        private LogWriter logWriter = new LogWriter();
+        
         private readonly Dictionary<string, string> users = new Dictionary<string, string>();
 
        /// <summary>
@@ -59,7 +62,7 @@ namespace Server
             
             // Add new user to dictionary
             this.users.TryAdd(key, name);
-            Console.WriteLine($"Client '{name}' with Key '{key}' registered!");
+            this.logWriter.WriteLogLine($"Client '{name}' with Key '{key}' registered!");
 
             return key;
         }
@@ -70,21 +73,21 @@ namespace Server
         }
 
         public void RemoveUser(string key){
-            Console.WriteLine($"TryDelete User: '{key}' !");
+            this.logWriter.WriteLogLine($"TryDelete User: '{key}' !");
             
             if (!this.users.ContainsKey(key))
             {
-                Console.WriteLine($"Der User mit dem Key '{key}' existiert nicht!");
+                this.logWriter.WriteLogLine($"Der User mit dem Key '{key}' existiert nicht!");
             }else
             {
                 this.users.Remove(key);
-                Console.WriteLine($"Deleted User: '{key}' !");
+                this.logWriter.WriteLogLine($"Deleted User: '{key}' !");
             }
         }
 
         public void ClearUsers(){
             this.users.Clear();
-            Console.WriteLine($"Cleared all Users!");
+            this.logWriter.WriteLogLine("Cleared all Users!");
         }
     }
 }

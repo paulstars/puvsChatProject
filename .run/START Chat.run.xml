@@ -5,8 +5,8 @@
     <method v="2" />
   </configuration>
   <configuration default="false" name="START Chat" type="CompoundRunConfigurationType">
-    <toRun name="Client" type="DotNetProject" />
     <toRun name="Server" type="DotNetProject" />
+    <toRun name="Client" type="RunNativeExe" />
     <method v="2" />
   </configuration>
 </component>

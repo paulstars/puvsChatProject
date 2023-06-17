@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Builder;
 
 namespace Server;
 
@@ -7,8 +8,12 @@ namespace Server;
 /// </summary>
 public class Program
 {
+    
     public static void Main(string[] args)
     {
+        var logWriter = new LogWriter();
+        logWriter.ClearLogFile();
+        
         // Create the web application
         var builder = WebApplication.CreateBuilder(args);
         var app = builder.Build();
