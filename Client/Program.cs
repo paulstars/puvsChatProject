@@ -19,6 +19,7 @@ public class Program
         client.MessageReceived += MessageReceivedHandler;
 
         // connect to the server and start listening for messages
+        var registerClient = await client.Register();
         var connectTask = await client.Connect();
         var listenTask = client.ListenForMessages();
 

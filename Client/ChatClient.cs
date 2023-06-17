@@ -42,6 +42,28 @@ public class ChatClient
     }
 
     /// <summary>
+    /// Registers this client to the server.
+    /// </summary>
+    /// <returns>True if the user could be registered.</returns>
+    public async Task<bool> Register()
+    {
+        var message = await this.httpClient.GetFromJsonAsync<Registration>($"/messages?id={this.alias}&key={this.key}");
+
+        // if a new registration was received notify the user
+        if (message != null)
+        {
+            this.key = message.Key;
+        }
+        // request a registrations
+        var request = new Registration { Sender = this.alias, Key = this.key};
+        var response = await this.httpClient.PostAsJsonAsync("/register", request);
+        Console.WriteLine(response);
+        // this.key = response;
+        
+        return response.IsSuccessStatusCode;
+    }
+    
+    /// <summary>
     /// Connects this client to the server.
     /// </summary>
     /// <returns>True if the connection could be established; otherwise False</returns>

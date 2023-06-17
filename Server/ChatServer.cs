@@ -52,32 +52,7 @@ public class ChatServer
 
                 var id = rawId.ToString();
                 var key = rawKey.ToString();
-                var checkKey = this.users.CheckKey(key);
-                var checkName = this.users.CheckName(id);
-                var checkUser = this.users.CheckUser(key, id);
                 
-                // Check if user exists
-                switch (checkUser)
-                {
-                    // Tell the client if the chosen name is already in use.
-                    case false when !checkKey && checkName:
-                        context.Response.StatusCode = StatusCodes.Status409Conflict;
-                        await context.Response.WriteAsync($"User '{id}' is already in use!");
-                        break;
-                    
-                    // Try to register a new user in the dictionary if it does not already exist.
-                    case false when !checkKey && !checkName:
-                        key = this.users.AddUser(id);
-                        break;
-                    
-                    // Verify existing user
-                    case true:
-                        lock (this.lockObject)
-                        {
-                            this.logWriter.WriteLogLine($"'{id}' successfully verified!");
-                        }
-                        break;
-                }
 
                 // register a client to receive the next message
                 var error = true;
@@ -111,17 +86,6 @@ public class ChatServer
                 // otherwise wait for the next message broadcast
                 var message = await tcs.Task;
 
-                lock (this.lockObject)
-                {
-                    // save the key in message
-                    this.logWriter.WriteLogLine("VORHER: " + message.Key);
-                    message.Key = key;
-                    this.logWriter.WriteLogLine("NACHHER: " + message.Key);
-                    this.logWriter.WriteLogLine($"Client '{id}' received message: {message.Content}");
-                }
-
-
-
                 // send out the next message
                 await context.Response.WriteAsJsonAsync(message);
             });
@@ -137,18 +101,9 @@ public class ChatServer
                     await context.Response.WriteAsync("Message invalid.");
                 }
                 
-                var sender = message?.Sender;
-                var key = message?.Key;
-                
-                // // Check if user is registered!
-                // if (!this.users.CheckUser(key, sender))
-                // {
-                //     context.Response.StatusCode = StatusCodes.Status409Conflict;
-                //     await context.Response.WriteAsync("User invalid!");
-                // }
                 lock (this.lockObject)
                 {
-                    this.logWriter.WriteLogLine($"Received message from client('{sender}'): '{message!.Content}' with key '{key}'");
+                    this.logWriter.WriteLogLine($"Received message from client('{message!.Sender}'): '{message.Content}' with key '{message.Key}'");
                 }
                 
                 // maintain the chat history
@@ -171,6 +126,53 @@ public class ChatServer
                 // confirm that the new message was successfully processed
                 context.Response.StatusCode = StatusCodes.Status201Created;
                 await context.Response.WriteAsync("Message successfully processed!");
+            });
+            
+            
+            endpoints.MapGet("/register", async context =>
+            {
+                var tcs = new TaskCompletionSource<ChatMessage>();
+
+                context.Request.Query.TryGetValue("id", out var rawId);
+                context.Request.Query.TryGetValue("key", out var rawKey);
+
+                var name = rawId.ToString();
+                var key = rawKey.ToString();
+
+                var checkKey = this.users.CheckKey(key);
+                var checkName = this.users.CheckName(name);
+                var checkUser = this.users.CheckUser(key, name);
+
+                switch (checkName)
+                {
+                    // Try to register a new user in the dictionary if it does not already exist.
+                    case false when !checkKey:
+                        lock (this.lockObject)
+                        {
+                            key = this.users.AddUser(name);
+                            this.logWriter.WriteLogLine($"Client '{name}' registered with '{key}'!");
+                        }
+                        break;
+                    
+                    // Tell the client if the chosen name is already in use.
+                    case true when !checkUser:
+                        context.Response.StatusCode = StatusCodes.Status409Conflict;
+                        await context.Response.WriteAsync($"User '{name}' is already in use!");
+                        break;
+                        
+                }
+
+                // // Check if user is registered!
+                // if (!this.users.CheckUser(key, sender))
+                // {
+                //     context.Response.StatusCode = StatusCodes.Status409Conflict;
+                //     await context.Response.WriteAsync("User invalid!");
+                // }
+                
+                
+                // confirm that the new message was successfully processed
+                context.Response.StatusCode = StatusCodes.Status201Created;
+                await context.Response.WriteAsJsonAsync(key);
             });
         });
     }

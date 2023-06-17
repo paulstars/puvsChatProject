@@ -9,6 +9,7 @@ namespace Server
     /// </summary>
     public class UserDict
     {
+        private Object obj = new();
         private LogWriter logWriter = new LogWriter();
         
         private readonly Dictionary<string, string> users = new Dictionary<string, string>();
@@ -60,8 +61,11 @@ namespace Server
             // generate new key
             var key = Guid.NewGuid().ToString();
             
+            lock (obj)
+            {
+                this.users.TryAdd(key, name);
+            }
             // Add new user to dictionary
-            this.users.TryAdd(key, name);
             this.logWriter.WriteLogLine($"Client '{name}' with Key '{key}' registered!");
 
             return key;
