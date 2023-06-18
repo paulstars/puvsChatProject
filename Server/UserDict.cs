@@ -9,36 +9,36 @@ namespace Server
     /// </summary>
     public class UserDict
     {
-        private Object obj = new();
+        private object obj = new();
         private LogWriter logWriter = new LogWriter();
         
         private readonly Dictionary<string, string> users = new Dictionary<string, string>();
 
        /// <summary>
-       ///  Checks if a user with this key and name exists.
+       ///  Checks if a user with this unique key and name exists.
        /// </summary>
-       /// <param name="key">Unique Key of this user.</param>
+       /// <param name="uKey">Unique key of this user.</param>
        /// <param name="name">The name of a user.</param>
        /// <returns>Is registered: true or false</returns>
-        public bool CheckUser(string key, string name)
+        public bool CheckUser(string name, string uKey)
         {
-            if (!this.CheckKey(key)) return false;
-            this.users.TryGetValue(key, out var value);
-            return value == name;
+            if (!this.CheckKey(name)) return false;
+            this.users.TryGetValue(name, out var value);
+            return value == uKey;
         }
 
         /// <summary>
-        /// Checks if a user with this name and key is registered.
+        /// Checks if a user with unique key is registered.
         /// </summary>
-        /// <param name="key">Unique Key of this user.</param>
+        /// <param name="uKey">Unique Key of this user.</param>
         /// <returns>Is registered: true or false</returns>
-        public bool CheckKey(string key)
+        public bool CheckKey(string uKey)
         {
             // Check if key is default.
-            if (key == "-1") return false;
+            if (uKey == "-1") return false;
             
             // Check if key is registered.
-            return this.users.ContainsKey(key);
+            return this.users.ContainsValue(uKey);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Server
         /// <returns>Is registered: true or false</returns>
         public bool CheckName(string name)
         {
-            return this.users.ContainsValue(name);
+            return this.users.ContainsKey(name);
         }
 
         /// <summary>
@@ -59,16 +59,16 @@ namespace Server
         public string AddUser(string name)
         {
             // generate new key
-            var key = Guid.NewGuid().ToString();
+            var uKey = Guid.NewGuid().ToString();
             
-            lock (obj)
+            lock (this.obj)
             {
-                this.users.TryAdd(key, name);
+                this.users.TryAdd(name, uKey);
             }
             // Add new user to dictionary
-            this.logWriter.WriteLogLine($"Client '{name}' with Key '{key}' registered!");
+            this.logWriter.WriteLogLine($"Client '{name}' with unique key '{uKey}' registered!");
 
-            return key;
+            return uKey;
         }
 
         public string GetAllUser()
@@ -76,16 +76,16 @@ namespace Server
             return null;
         }
 
-        public void RemoveUser(string key){
-            this.logWriter.WriteLogLine($"TryDelete User: '{key}' !");
+        public void RemoveUser(string name){
+            this.logWriter.WriteLogLine($"TryDelete User: '{name}' !");
             
-            if (!this.users.ContainsKey(key))
+            if (!this.users.ContainsKey(name))
             {
-                this.logWriter.WriteLogLine($"Der User mit dem Key '{key}' existiert nicht!");
+                this.logWriter.WriteLogLine($"Der User mit dem Key '{name}' existiert nicht!");
             }else
             {
-                this.users.Remove(key);
-                this.logWriter.WriteLogLine($"Deleted User: '{key}' !");
+                this.users.Remove(name);
+                this.logWriter.WriteLogLine($"Deleted User: '{name}' !");
             }
         }
 
