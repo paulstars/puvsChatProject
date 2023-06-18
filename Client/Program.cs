@@ -24,6 +24,7 @@ public class Program{
         var color = cs.ColorSelection();
         
         // connect the event handler for the received messages
+        client = new ChatClient(currentSender, color, serverUri);
         client.MessageReceived += MessageReceivedHandler;
         
         
