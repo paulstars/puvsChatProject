@@ -10,5 +10,6 @@
 
         public required string Color { get; set; }
         
-    }   
-}
+        public required string AdressedTo { get; set; }
+        
+    }   }

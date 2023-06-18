@@ -6,4 +6,6 @@ public class MessageReceivedEventArgs : EventArgs
     public required string Message { get; set; }
 
     public required string Color { get; set;}
+    
+    public required string AdressedTo { get; set;}
 }

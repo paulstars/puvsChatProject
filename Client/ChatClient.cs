@@ -19,6 +19,7 @@ public class ChatClient
     /// </summary>
     private readonly string alias;
     private readonly string color;
+    private readonly string adressedTo;
 
     /// <summary>
     /// The cancellation token source for the listening task
@@ -29,11 +30,13 @@ public class ChatClient
     /// Initializes a new instance of the <see cref="ChatClient"/> class.
     /// </summary>
     /// <param name="alias">The alias of the user.</param>
+    /// <param name="color">The chosen personal color of the user.</param>
     /// <param name="serverUri">The server URI.</param>
-    public ChatClient(string alias,string color, Uri serverUri)
+    public ChatClient(string alias,string color, string adressedTo, Uri serverUri)
     {
         this.alias = alias;
         this.color = color;
+        this.adressedTo = adressedTo;
         this.httpClient = new HttpClient();
         this.httpClient.BaseAddress = serverUri;
     }
@@ -45,7 +48,7 @@ public class ChatClient
     public async Task<bool> Connect()
     {
         // create and send a welcome message
-        var message = new ChatMessage { Sender = this.alias, Content = $"Hi, I joined the chat!", Color = this.color};
+        var message = new ChatMessage { Sender = this.alias, Content = $"Hi, I joined the chat!", Color = this.color, AdressedTo = this.adressedTo};
         var response = await this.httpClient.PostAsJsonAsync("/messages", message);
  
 
@@ -56,11 +59,12 @@ public class ChatClient
     /// Sends a new message into the chat.
     /// </summary>
     /// <param name="content">The message content as text.</param>
+    /// <param name="adressedTo">The destination of the message. Either All or specific user</param>
     /// <returns>True if the message could be send; otherwise False</returns>
-    public async Task<bool> SendMessage(string content)
+    public async Task<bool> SendMessage(string content, string adressedTo)
     {
         // creates the message and sends it to the server
-        var message = new ChatMessage { Sender = this.alias, Content = content, Color = this.color };
+        var message = new ChatMessage { Sender = this.alias, Content = content, Color = this.color, AdressedTo = adressedTo};
         var response = await this.httpClient.PostAsJsonAsync("/messages", message);
 
         return response.IsSuccessStatusCode;
@@ -78,7 +82,7 @@ public class ChatClient
         {
             try
             {
-                string url = $"/messages?id={this.alias}&color={this.color}";
+                string url = $"/messages?id={this.alias}&color={this.color}&adressedTo={this.adressedTo}";
 
                 // listening for messages. possibly waits for a long time.
                 var message = await this.httpClient.GetFromJsonAsync<ChatMessage>(url, cancellationToken);
@@ -86,13 +90,13 @@ public class ChatClient
                 // if a new message was received notify the user
                 if (message != null)
                 {
-                    this.OnMessageReceived(message.Sender, message.Content, message.Color);
+                    this.OnMessageReceived(message.Sender, message.Content, message.Color, message.AdressedTo);
                 }
             }
             catch (TaskCanceledException) when (cancellationToken.IsCancellationRequested)
             {
                 // catch the cancellation 
-                this.OnMessageReceived("Me", "Leaving the chat", "White");
+                this.OnMessageReceived("Me", "Leaving the chat", "White", "All");
                 break;
             }
         }
@@ -115,8 +119,10 @@ public class ChatClient
     /// </summary>
     /// <param name="sender">The alias of the sender.</param>
     /// <param name="message">The containing message as text.</param>
-    protected virtual void OnMessageReceived(string sender, string message, string color)
+    /// <param name="color">The personal color chosen by the sender.</param>
+    /// <param name="adressedTo">The destination chosen by the sender. Either All or a specific person.</param>
+    protected virtual void OnMessageReceived(string sender, string message, string color, string adressedTo)
     {
-        this.MessageReceived?.Invoke(this, new MessageReceivedEventArgs { Sender = sender, Message = message, Color = color });
+        this.MessageReceived?.Invoke(this, new MessageReceivedEventArgs { Sender = sender, Message = message, Color = color, AdressedTo = adressedTo});
     }
 }

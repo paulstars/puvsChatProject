@@ -18,6 +18,7 @@ public class Program{
         ColorSettings cs = new ColorSettings();
 
         var serverUri = new Uri("http://localhost:5000");
+        string adressedTo = "All";
         
         // query the user for a name
         ts.Welcome();
@@ -30,7 +31,7 @@ public class Program{
         Console.WriteLine();
 
         // create a new client and connect the event handler for the received messages
-        var client = new ChatClient(currentSender, color, serverUri);
+        var client = new ChatClient(currentSender, color, adressedTo,  serverUri);
         client.MessageReceived += MessageReceivedHandler;
 
         // connect to the server and start listening for messages
@@ -54,10 +55,15 @@ public class Program{
                 break;
             }
 
-            //Console.WriteLine($"Sending message: {content}");
-
+            if (content.ToLower() == "/f")
+            {
+                //Start TextSnipplet for whisper
+                adressedTo = ts.whisper();
+                Console.WriteLine("Bitte gebe deine Nachricht ein:");
+                content = Console.ReadLine();
+            }
             // send the message and display the result
-            if (await client.SendMessage(content))
+            if (await client.SendMessage(content, adressedTo))
             {
                 //Console.WriteLine("Message sent successfully.");
             }
@@ -88,5 +94,6 @@ public class Program{
         Console.Write(e.Sender);
         cs.setColor("White");
         Console.WriteLine($": {e.Message}");
+        Console.WriteLine($"It was addressed to: {e.AdressedTo}");
     }
 }

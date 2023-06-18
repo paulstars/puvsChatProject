@@ -111,7 +111,8 @@ public class ChatServer
                     {
                         Sender = "System",
                         Content = "AFK-Warnung!",
-                        Color = "white"
+                        Color = "white",
+                        AdressedTo = "All"
                     };
 
                     Console.WriteLine("Zu lange nichts gesendet. Verschicke Warnung");
