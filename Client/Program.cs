@@ -19,16 +19,17 @@ public class Program{
 
         var serverUri = new Uri("http://localhost:5000");
         
+        // create a new client and connect the event handler for the received messages
+        var client = new ChatClient(serverUri);
+        client.MessageReceived += MessageReceivedHandler;
+        
         // query the user for a name
         ts.Welcome();
-        string currentSender = Console.ReadLine() ?? Guid.NewGuid().ToString();
+        var currentSender = await client.ChooseName();
         ts.DotLine();
-        string color = cs.ColorSelection();
+        var color = cs.ColorSelection();
         
         
-        // create a new client and connect the event handler for the received messages
-        var client = new ChatClient(currentSender, color, serverUri);
-        client.MessageReceived += MessageReceivedHandler;
         
         // connect to the server and start listening for messages
         var connectTask = await client.Connect();

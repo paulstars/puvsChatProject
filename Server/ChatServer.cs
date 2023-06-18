@@ -48,14 +48,25 @@ public class ChatServer
             
             endpoints.MapGet("/usedNames", async context =>
             {
-                // Konvertieren Sie die Liste in JSON
-                var json = JsonSerializer.Serialize(this.usedNames);
-
-                // Setzen Sie den Content-Type des Responses auf application/json
-                context.Response.ContentType = "application/json";
-
-                // Schreiben Sie das JSON in die Antwort
-                await context.Response.WriteAsync(json);
+                context.Request.Query.TryGetValue("name", out var rawName);
+                var name = rawName.ToString();
+                
+                if (this.usedNames.Contains(name))
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                }
+                else
+                {
+                    context.Response.StatusCode = StatusCodes.Status201Created;
+                }
+                // // Konvertieren Sie die Liste in JSON
+                // var json = JsonSerializer.Serialize(this.usedNames);
+                //
+                // // Setzen Sie den Content-Type des Responses auf application/json
+                // context.Response.ContentType = "application/json";
+                //
+                // // Schreiben Sie das JSON in die Antwort
+                // await context.Response.WriteAsync(json);
             });
             
             // The endpoint to register a client to the server to subsequently receive the next message

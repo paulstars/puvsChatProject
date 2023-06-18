@@ -8,8 +8,8 @@ namespace Client
 {
     internal class ColorSettings
     {
-        TextSnipplets ts = new TextSnipplets();
-
+        TextSnipplets ts = new();
+        
         public void setColor(string selection)
         {
             if (Enum.TryParse(selection, true, out ConsoleColor color))

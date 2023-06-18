@@ -6,8 +6,8 @@
         public void Welcome()
         {
             System.Console.WriteLine("Wilkommen im Chat.");
-            System.Console.WriteLine("Erzähle uns zunächst etwas über dich");
-            System.Console.WriteLine("Wie heißt du?");            
+            System.Console.WriteLine("Erzähle uns zunächst etwas über dich!");
+            System.Console.Write("Name:\t");            
         }
 
         public void DotLine()
@@ -33,14 +33,7 @@
             cs.setColor("white");
             Console.Write(".");
         }
-
-        public string otherName()
-        {
-            Console.WriteLine("Dieser Name ist bereits vorhanden, bitte wähle einen Anderen.");
-            string newName = Console.ReadLine();
-            return newName;
-        }
-
+        
     }
     
     
