@@ -24,9 +24,13 @@ public class ChatServer
     private readonly ConcurrentDictionary<string, TaskCompletionSource<ChatMessage>> waitingClients = new();
 
     /// <summary>
-    /// Status of the Colors. (used/unsused)
+    /// List containing all still usable colors
     /// </summary>
     List<string> usedColors = new List<string>();
+    
+    /// <summary>
+    /// List containing all registered names.
+    /// </summary>
     List<string> usedNames = new List<string>();
 
     /// <summary>
