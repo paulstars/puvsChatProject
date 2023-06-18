@@ -45,6 +45,8 @@ public class ChatServer
             // This endpoint utilizes the Long-Running-Requests pattern.
             endpoints.MapGet("/messages", async context =>
             {
+                this.logWriter.WriteLogLine("!!GET Messages called!!");
+
                 var tcs = new TaskCompletionSource<ChatMessage>();
 
                 context.Request.Query.TryGetValue("id", out var rawId);
@@ -88,11 +90,14 @@ public class ChatServer
 
                 // send out the next message
                 await context.Response.WriteAsJsonAsync(message);
+                this.logWriter.WriteLogLine("!!GET Messages END!!");
             });
 
             // This endpoint is for sending messages into the chat
             endpoints.MapPost("/messages", async context =>
             {
+                this.logWriter.WriteLogLine("!!POST Message called!!");
+
                 var message = await context.Request.ReadFromJsonAsync<ChatMessage>();
 
                 if (message == null)
@@ -126,22 +131,32 @@ public class ChatServer
                 // confirm that the new message was successfully processed
                 context.Response.StatusCode = StatusCodes.Status201Created;
                 await context.Response.WriteAsync("Message successfully processed!");
+                this.logWriter.WriteLogLine("!!POST Message END!!");
             });
             
             
             endpoints.MapGet("/register", async context =>
             {
-                var tcs = new TaskCompletionSource<ChatMessage>();
 
+                this.logWriter.WriteLogLine("!!Register called!!");
+                
                 context.Request.Query.TryGetValue("id", out var rawId);
                 context.Request.Query.TryGetValue("key", out var rawKey);
 
+                    
                 var name = rawId.ToString();
-                var key = rawKey.ToString();
+                var uKey = rawKey.ToString();
 
-                var checkKey = this.users.CheckKey(key);
-                var checkName = this.users.CheckName(name);
-                var checkUser = this.users.CheckUser(key, name);
+                bool checkKey;
+                bool checkName;
+                bool checkUser;
+                
+                lock (this.lockObject)
+                {
+                    checkKey = this.users.CheckKey(uKey);
+                    checkName = this.users.CheckName(name);
+                    checkUser = this.users.CheckUser(name, uKey);
+                }
 
                 switch (checkName)
                 {
@@ -149,8 +164,8 @@ public class ChatServer
                     case false when !checkKey:
                         lock (this.lockObject)
                         {
-                            key = this.users.AddUser(name);
-                            this.logWriter.WriteLogLine($"Client '{name}' registered with '{key}'!");
+                            uKey = this.users.AddUser(name);
+                            this.logWriter.WriteLogLine($"Client '{name}' registered with '{uKey}'!");
                         }
                         break;
                     
@@ -159,20 +174,23 @@ public class ChatServer
                         context.Response.StatusCode = StatusCodes.Status409Conflict;
                         await context.Response.WriteAsync($"User '{name}' is already in use!");
                         break;
-                        
                 }
+                        
 
                 // // Check if user is registered!
-                // if (!this.users.CheckUser(key, sender))
+                // if (!this.users.CheckUser(name, uKey))
                 // {
                 //     context.Response.StatusCode = StatusCodes.Status409Conflict;
                 //     await context.Response.WriteAsync("User invalid!");
                 // }
+
                 
+                var reg = new Registration{ Sender = name, Key = uKey};
                 
                 // confirm that the new message was successfully processed
                 context.Response.StatusCode = StatusCodes.Status201Created;
-                await context.Response.WriteAsJsonAsync(key);
+                await context.Response.WriteAsJsonAsync(reg);
+                this.logWriter.WriteLogLine("!!Register END!!");
             });
         });
     }

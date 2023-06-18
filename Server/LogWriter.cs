@@ -7,13 +7,16 @@ public class LogWriter
 {
     private const string FilePath = @"C:\Users\pauls\Documents\GitHub\puvsChatProject\Server\Log.txt";
 
-    private object log = new Object();
+    private readonly object log = new();
 
     public void WriteLogLine(string line)
     {
-        using var writer = new StreamWriter(FilePath, true);
-            writer.WriteLineAsync(line);
-            Console.WriteLine(line);
+        lock (this.log)
+        {
+            using var writer = new StreamWriter(FilePath, true);
+                writer.WriteLineAsync(line);
+                Console.WriteLine(line);
+        }
     }
 
     public async void ClearLogFile()

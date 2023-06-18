@@ -8,7 +8,7 @@ public class Program
     public static async Task Main(string[] args)
     {
         var serverUri = new Uri("http://localhost:5000");
-
+        
         // query the user for a name
         Console.Write("Geben Sie Ihren Namen ein: ");
         var sender = Console.ReadLine() ?? Guid.NewGuid().ToString();
@@ -18,39 +18,46 @@ public class Program
         var client = new ChatClient(sender, serverUri);
         client.MessageReceived += MessageReceivedHandler;
 
-        // connect to the server and start listening for messages
+        
+        // register the client to the server
         var registerClient = await client.Register();
-        var connectTask = await client.Connect();
-        var listenTask = client.ListenForMessages();
-
-        // query the user for messages to send or the exit command
-        while (true)
+        if (registerClient)
         {
-            Console.Write("Geben Sie Ihre Nachricht ein (oder 'exit' zum Beenden): ");
-            var content = Console.ReadLine() ?? string.Empty;
+                
+            
+            // connect to the server and start listening for messages
+            var connectTask = await client.Connect();
+            var listenTask = client.ListenForMessages();
 
-            // cancel the listening task and exit the loop
-            if (content.ToLower() == "exit")
+            // query the user for messages to send or the exit command
+            while (true)
             {
-                client.CancelListeningForMessages();
-                break;
+                Console.Write("Geben Sie Ihre Nachricht ein (oder 'exit' zum Beenden): ");
+                var content = Console.ReadLine() ?? string.Empty;
+
+                // cancel the listening task and exit the loop
+                if (content.ToLower() == "exit")
+                {
+                    client.CancelListeningForMessages();
+                    break;
+                }
+
+                Console.WriteLine($"Sending message: {content}");
+
+                // send the message and display the result
+                if (await client.SendMessage(content))
+                {
+                    Console.WriteLine("Message sent successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("Failed to send message.");
+                }
             }
 
-            Console.WriteLine($"Sending message: {content}");
-
-            // send the message and display the result
-            if (await client.SendMessage(content))
-            {
-                Console.WriteLine("Message sent successfully.");
-            }
-            else
-            {
-                Console.WriteLine("Failed to send message.");
-            }
-        }
-
-        // wait for the listening for new messages to end
-        await Task.WhenAll(listenTask);
+            // wait for the listening for new messages to end
+            await Task.WhenAll(listenTask);
+        }    
 
         Console.WriteLine("\nGood bye...");
     }

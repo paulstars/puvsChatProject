@@ -11,8 +11,10 @@ public class Program
     
     public static void Main(string[] args)
     {
+        // Initialises the LogWriter and clears the log-file
         var logWriter = new LogWriter();
         logWriter.ClearLogFile();
+        logWriter.WriteLogLine("\t !!START Server!!");
         
         // Create the web application
         var builder = WebApplication.CreateBuilder(args);

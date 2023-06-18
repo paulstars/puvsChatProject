@@ -47,20 +47,18 @@ public class ChatClient
     /// <returns>True if the user could be registered.</returns>
     public async Task<bool> Register()
     {
-        var message = await this.httpClient.GetFromJsonAsync<Registration>($"/messages?id={this.alias}&key={this.key}");
-
-        // if a new registration was received notify the user
-        if (message != null)
+        var status = false;
+        var response = await this.httpClient.GetFromJsonAsync<Registration>($"/register?id={this.alias}&key={this.key}");
+        Console.WriteLine("\nGOT response!");
+        if (response != null)
         {
-            this.key = message.Key;
+            Console.WriteLine("\nGOT Key!");
+            Console.WriteLine(response.Key);
+            this.key = response.Key;
+            status = true;
         }
-        // request a registrations
-        var request = new Registration { Sender = this.alias, Key = this.key};
-        var response = await this.httpClient.PostAsJsonAsync("/register", request);
-        Console.WriteLine(response);
-        // this.key = response;
         
-        return response.IsSuccessStatusCode;
+        return status;
     }
     
     /// <summary>
@@ -108,7 +106,6 @@ public class ChatClient
                 // if a new message was received notify the user
                 if (message != null)
                 {
-                    this.key = message.Key;
                     this.OnMessageReceived(message.Sender, message.Content);
                 }
             }
