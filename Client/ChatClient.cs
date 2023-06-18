@@ -38,6 +38,41 @@ public class ChatClient
         this.httpClient = new HttpClient();
         this.httpClient.BaseAddress = serverUri;
     }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChatClient"/> class.
+    /// </summary>
+    /// <param name="serverUri">The server URI.</param>
+    public ChatClient(Uri serverUri)
+    {
+        this.alias = "-1";
+        this.color = "-1";
+        this.httpClient = new HttpClient();
+        this.httpClient.BaseAddress = serverUri;
+    }
+
+    /// <summary>
+    /// Lets the user choose a name and verifies it
+    /// </summary>
+    /// <returns>alias - Name of the user.</returns>
+    public async Task<string> ChooseName()
+    {
+        
+        this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
+        // Ask server if this name is available
+        var listResponse = await this.httpClient.GetAsync($"/usedNames?name={this.alias}");
+    
+        // Tell the user to pick another name
+        while (!listResponse.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Dieser Name ist bereits vorhanden, bitte wähle einen Anderen.");
+            Console.Write("Name:\t");
+            this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
+            listResponse = await this.httpClient.GetAsync($"/usedNames?name={this.alias}");
+        }
+
+        Console.WriteLine("");
+        return this.alias;
+    }
 
     /// <summary>
     /// Connects this client to the server.
@@ -45,27 +80,6 @@ public class ChatClient
     /// <returns>True if the connection could be established; otherwise False</returns>
     public async Task<bool> Connect()
     {
-        TextSnipplets ts = new TextSnipplets();
-        // Abfrage der Liste
-        var listResponse = await this.httpClient.GetAsync("/usedNames");
-    
-        if (listResponse.IsSuccessStatusCode)
-        {
-            var json = await listResponse.Content.ReadAsStringAsync();
-            var usedNames = JsonSerializer.Deserialize<List<string>>(json);
-
-            Console.WriteLine("Überprüfe Namen");
-            
-            while (usedNames.Contains(this.alias))
-            {
-                this.alias = ts.otherName(); 
-            }
-        }
-        else
-        {
-            Console.WriteLine("Error retrieving list");
-        }
-        
         // create and send a welcome message
         var message = new ChatMessage { Sender = this.alias, Content = $"Hi, I joined the chat!", Color = this.color};
         var response = await this.httpClient.PostAsJsonAsync("/messages", message);
