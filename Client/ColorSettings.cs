@@ -10,7 +10,7 @@ namespace Client
     {
         TextSnipplets ts = new();
         
-        public void setColor(string selection)
+        public void SetColor(string selection)
         {
             if (Enum.TryParse(selection, true, out ConsoleColor color))
             {
@@ -24,54 +24,79 @@ namespace Client
         }
         public string ColorSelection()
         {
-            string[] colorRange =
+                // color source
+                string[] colorRange =
+                    {
+                        "darkBlue", "darkGreen", "darkCyan",
+                        "darkRed", "darkMagenta", "darkYellow",
+                        "gray", "darkGray", "blue", "green", "cyan",
+                        "red", "magenta", "yellow", "white"
+                    };
+
+                var colorDictionary = new Dictionary<string, string>();
+                var ind = 0;
+                
+                // builds the dictionary for the colors
+                foreach (var color in colorRange)
                 {
-                    "darkBlue", "darkGreen", "darkCyan",
-                    "darkRed", "darkMagenta", "darkYellow",
-                    "gray", "darkGray", "blue", "green", "cyan",
-                    "red", "magenta", "yellow", "white"
-                };
+                    var counter = "0" + ind;
+                    if (counter.Length > 2)
+                    {
+                        counter = ind.ToString();
+                    }
+                    
+                    colorDictionary.Add(counter, color);
 
-            Dictionary<string, string> colorDictionary = new Dictionary<string, string>()
-                {
-                    { "darkBlue", "00" },{ "darkGreen", "01" },{ "darkCyan", "02" },{ "darkRed", "03" },
-                    { "darkMagenta", "04" },{ "darkYellow", "05" },{ "gray", "06" },{ "darkGray", "07" },
-                    { "blue", "08" },{ "green", "09" },{ "cyan", "10" },{ "red", "11" },{ "magenta", "12" },
-                    { "yellow", "13" },{ "white", "14" }
-                };
-
-            string colorChoice = "";
-
-            Console.WriteLine("Was ist deine Lieblingsfarbe?");
-            ts.DotLine();
-
-
-            for (int i = 0; i < colorRange.Length; i++)
-            {
-                string counter = "0" + i;
-                if (counter.Length > 2)
-                {
-                    counter = i.ToString();
+                    ind++;
                 }
 
-                setColor(colorRange[i]);
-                Console.WriteLine(counter + " " + "■" + " " + colorRange[i]);
-
-            }
-
-            string? answer = Console.ReadLine();
-
-            foreach (var kvp in colorDictionary)
-            {
-                if (kvp.Value == answer)
+                string? answer;
+                var first = true;
+            
+                // continues till a valid color is given
+                do
                 {
-                    colorChoice = kvp.Key;
-                    break;
-                }
+                    do
+                    {
+                        // Change the text in the first iteration
+                        if (first)
+                        {
+                            Console.WriteLine("Was ist deine Lieblingsfarbe?");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Diese Eingabe ist nicht korrekt!");
+                            Console.WriteLine("Bitte Versuchen Sie es erneut!");
+                        }
+                        this.ts.DotLine();
+                    
+                        // Displays all available color options
+                        for (var i = 0; i < colorRange.Length; i++)
+                        {
+                            var counter = "0" + i;
+                            if (counter.Length > 2)
+                            {
+                                counter = i.ToString();
+                            }
 
-            }
-            Console.Clear();
-            return colorChoice;
+                            this.SetColor(colorRange[i]);
+                            Console.WriteLine(counter + " " + "■" + " " + colorRange[i]);
+
+                        }
+                    
+                        // input of colorChoice
+                        answer = Console.ReadLine();
+                        Console.Clear();
+
+
+                        first = false;
+                    } while (answer == null);
+                } while (!colorDictionary.ContainsKey(answer));
+
+                // get the color from the dictionary
+                colorDictionary.TryGetValue(answer, out var colorChoice);
+            
+                return colorChoice!;
         }
     }
 }

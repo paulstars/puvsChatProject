@@ -28,9 +28,9 @@
 
             //Console.Clear();
             Console.Write("Viel spaß beim Chatten ");
-            cs.setColor(color);
+            cs.SetColor(color);
             Console.Write(alias);
-            cs.setColor("white");
+            cs.SetColor("white");
             Console.Write(".");
         }
         

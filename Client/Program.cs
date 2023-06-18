@@ -88,9 +88,9 @@ public class Program{
         var time = DateTime.Now.ToString().Remove(0,11).Remove(5,3);
         Console.Write($"[{time}] ");
         
-        cs.setColor(e.Color);
+        cs.SetColor(e.Color);
         Console.Write(e.Sender);
-        cs.setColor("White");
+        cs.SetColor("White");
         Console.WriteLine($": {e.Message}");
     }
 }
