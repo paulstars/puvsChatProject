@@ -21,20 +21,22 @@ public class Program{
         
         // query the user for a name
         ts.Welcome();
-        
         string currentSender = Console.ReadLine() ?? Guid.NewGuid().ToString();
-
         ts.DotLine();
         string color = cs.ColorSelection();
-        ts.HaveFun(color, currentSender);
-        Console.WriteLine();
-
+        
+        
         // create a new client and connect the event handler for the received messages
         var client = new ChatClient(currentSender, color, serverUri);
         client.MessageReceived += MessageReceivedHandler;
-
+        
         // connect to the server and start listening for messages
         var connectTask = await client.Connect();
+        
+        ts.HaveFun(color, currentSender);
+        Console.WriteLine();
+
+        
         var listenTask = client.ListenForMessages();
 
         // query the user for messages to send or the exit command

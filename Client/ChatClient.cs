@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Text.Json;
 using System.Xml.Linq;
 using Data;
 
@@ -17,7 +18,7 @@ public class ChatClient
     /// <summary>
     /// The alias of the user
     /// </summary>
-    private readonly string alias;
+    private string alias;
     private readonly string color;
 
     /// <summary>
@@ -44,6 +45,27 @@ public class ChatClient
     /// <returns>True if the connection could be established; otherwise False</returns>
     public async Task<bool> Connect()
     {
+        TextSnipplets ts = new TextSnipplets();
+        // Abfrage der Liste
+        var listResponse = await this.httpClient.GetAsync("/usedNames");
+    
+        if (listResponse.IsSuccessStatusCode)
+        {
+            var json = await listResponse.Content.ReadAsStringAsync();
+            var usedNames = JsonSerializer.Deserialize<List<string>>(json);
+
+            Console.WriteLine("Überprüfe Namen");
+            
+            while (usedNames.Contains(this.alias))
+            {
+                this.alias = ts.otherName(); 
+            }
+        }
+        else
+        {
+            Console.WriteLine("Error retrieving list");
+        }
+        
         // create and send a welcome message
         var message = new ChatMessage { Sender = this.alias, Content = $"Hi, I joined the chat!", Color = this.color};
         var response = await this.httpClient.PostAsJsonAsync("/messages", message);

@@ -34,6 +34,13 @@
             Console.Write(".");
         }
 
+        public string otherName()
+        {
+            Console.WriteLine("Dieser Name ist bereits vorhanden, bitte wähle einen Anderen.");
+            string newName = Console.ReadLine();
+            return newName;
+        }
+
     }
     
     

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Text.Json;
 using Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -27,7 +28,8 @@ public class ChatServer
     /// Status of the Colors. (used/unsused)
     /// </summary>
     List<string> usedColors = new List<string>();
-                    
+    List<string> usedNames = new List<string>();
+
     /// <summary>
     /// The lock object for concurrency
     /// </summary>
@@ -43,6 +45,19 @@ public class ChatServer
 
         app.UseEndpoints(endpoints =>
         {
+            
+            endpoints.MapGet("/usedNames", async context =>
+            {
+                // Konvertieren Sie die Liste in JSON
+                var json = JsonSerializer.Serialize(this.usedNames);
+
+                // Setzen Sie den Content-Type des Responses auf application/json
+                context.Response.ContentType = "application/json";
+
+                // Schreiben Sie das JSON in die Antwort
+                await context.Response.WriteAsync(json);
+            });
+            
             // The endpoint to register a client to the server to subsequently receive the next message
             // This endpoint utilizes the Long-Running-Requests pattern.
             endpoints.MapGet("/messages", async context =>
@@ -54,9 +69,9 @@ public class ChatServer
                 context.Request.Query.TryGetValue("id", out var rawId);
 
                 var id = rawId.ToString();
-            
+                this.usedNames.Add(id);
+                
                 Console.WriteLine($"Client '{id}' registered");
-
                 
                 // register a client to receive the next message
                 var error = true;
