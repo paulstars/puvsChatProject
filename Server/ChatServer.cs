@@ -57,16 +57,10 @@ public class ChatServer
                 }
                 else
                 {
+                    // Add new user
+                    this.usedNames.Add(name);
                     context.Response.StatusCode = StatusCodes.Status201Created;
                 }
-                // // Konvertieren Sie die Liste in JSON
-                // var json = JsonSerializer.Serialize(this.usedNames);
-                //
-                // // Setzen Sie den Content-Type des Responses auf application/json
-                // context.Response.ContentType = "application/json";
-                //
-                // // Schreiben Sie das JSON in die Antwort
-                // await context.Response.WriteAsync(json);
             });
             
             // The endpoint to register a client to the server to subsequently receive the next message
@@ -80,7 +74,13 @@ public class ChatServer
                 context.Request.Query.TryGetValue("id", out var rawId);
 
                 var id = rawId.ToString();
-                this.usedNames.Add(id);
+                
+                // Check if this user exists
+                if (!this.usedNames.Contains(id))
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsync("User invalid");
+                }
                 
                 Console.WriteLine($"Client '{id}' registered");
                 
@@ -178,6 +178,13 @@ public class ChatServer
 
                 Console.WriteLine($"Received message from client: {message!.Content}");
 
+                // Check if this user exists
+                if (!this.usedNames.Contains(message.Sender))
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsync("User invalid");
+                }
+                
                 // maintain the chat history
                 this.messageQueue.Enqueue(message);
 

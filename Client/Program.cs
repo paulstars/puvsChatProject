@@ -19,9 +19,8 @@ public class Program{
 
         var serverUri = new Uri("http://localhost:5000");
         
-        // create a new client and connect the event handler for the received messages
+        // create a new client
         var client = new ChatClient(serverUri);
-        client.MessageReceived += MessageReceivedHandler;
         
         // query the user for a name
         ts.Welcome();
@@ -29,6 +28,8 @@ public class Program{
         ts.DotLine();
         var color = cs.ColorSelection();
         
+        // connect the event handler for the received messages
+        client.MessageReceived += MessageReceivedHandler;
         
         
         // connect to the server and start listening for messages
@@ -47,8 +48,8 @@ public class Program{
             var content = Console.ReadLine() ?? string.Empty;
             
             //Moves the curser up by one, in order to remove the entered Text   
-            var curser = Console.GetCursorPosition();
-            Console.SetCursorPosition(0,curser.Top-1);
+            var cursor = Console.GetCursorPosition();
+            Console.SetCursorPosition(0,cursor.Top - 1);
 
             // cancel the listening task and exit the loop
             if (content.ToLower() == "exit")
@@ -83,8 +84,8 @@ public class Program{
     /// <param name="e">The <see cref="MessageReceivedEventArgs"/> instance containing the event data.</param>
     static void MessageReceivedHandler(object? sender, MessageReceivedEventArgs e)
     {
-        ColorSettings cs = new ColorSettings();
-        string time = DateTime.Now.ToString().Remove(0,11).Remove(5,3);
+        var cs = new ColorSettings();
+        var time = DateTime.Now.ToString().Remove(0,11).Remove(5,3);
         Console.Write($"[{time}] ");
         
         cs.setColor(e.Color);
