@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using System.Timers;
 using Timer = System.Timers.Timer;
 
+
 namespace Server;
 
 /// <summary>
@@ -24,9 +25,19 @@ public class ChatServer
     private readonly ConcurrentDictionary<string, TaskCompletionSource<ChatMessage>> waitingClients = new();
 
     /// <summary>
+    /// Default array of all available colors
+    /// </summary>
+    private static readonly string[] DefaultColors = {
+        "darkBlue", "darkGreen", "darkCyan",
+        "darkRed", "darkMagenta", "darkYellow",
+        "gray", "darkGray", "blue", "green", "cyan",
+        "red", "magenta", "yellow", "white"
+    };
+    
+    /// <summary>
     /// List containing all still usable colors
     /// </summary>
-    List<string> usedColors = new List<string>();
+    List<string> usedColors = new List<string>(DefaultColors);
     
     /// <summary>
     /// List containing all registered names.
@@ -49,7 +60,7 @@ public class ChatServer
         app.UseEndpoints(endpoints =>
         {
             
-            endpoints.MapGet("/usedNames", async context =>
+            endpoints.MapGet("/names", async context =>
             {
                 context.Request.Query.TryGetValue("name", out var rawName);
                 var name = rawName.ToString();
@@ -66,7 +77,22 @@ public class ChatServer
                 }
             });
             
-            // The endpoint to register a client to the server to subsequently receive the next message
+            // endpoint to receive all available colors
+            endpoints.MapGet("/colors", async context =>
+            {
+                var colors = string.Join("|", this.usedColors);
+                await context.Response.WriteAsync(colors);
+            });
+
+            // endpoint to register a color
+            endpoints.MapPost("/colors", async context =>
+            {
+                context.Request.Query.TryGetValue("color", out var rawColor);
+                var color = rawColor.ToString();
+                
+            });
+            
+            // The endpoint to receive the next message
             // This endpoint utilizes the Long-Running-Requests pattern.
             endpoints.MapGet("/messages", async context =>
             {

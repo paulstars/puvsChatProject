@@ -17,16 +17,8 @@ namespace Client
             }
 
         }
-        public string ColorSelection()
+        public string ColorSelection(string[] colorRange)
         {
-                // color source
-                string[] colorRange =
-                    {
-                        "darkBlue", "darkGreen", "darkCyan",
-                        "darkRed", "darkMagenta", "darkYellow",
-                        "gray", "darkGray", "blue", "green", "cyan",
-                        "red", "magenta", "yellow", "white"
-                    };
 
                 var colorDictionary = new Dictionary<string, string>();
                 var ind = 0;

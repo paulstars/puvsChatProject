@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+
 using Data;
 
 namespace Client;
@@ -17,7 +18,11 @@ public class ChatClient
     /// The alias of the user
     /// </summary>
     private string alias;
-    private readonly string color;
+    
+    /// <summary>
+    /// The color of the user
+    /// </summary>
+    private string color;
 
     /// <summary>
     /// The cancellation token source for the listening task
@@ -58,7 +63,7 @@ public class ChatClient
         
         this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
         // Ask server if this name is available
-        var listResponse = await this.httpClient.GetAsync($"/usedNames?name={this.alias}");
+        var listResponse = await this.httpClient.GetAsync($"/names?name={this.alias}");
     
         // Tell the user to pick another name
         while (!listResponse.IsSuccessStatusCode)
@@ -66,11 +71,23 @@ public class ChatClient
             Console.WriteLine("Dieser Name ist bereits vorhanden, bitte wähle einen Anderen.");
             Console.Write("Name:\t");
             this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
-            listResponse = await this.httpClient.GetAsync($"/usedNames?name={this.alias}");
+            listResponse = await this.httpClient.GetAsync($"/names?name={this.alias}");
         }
         Console.Clear();
 
         return this.alias;
+    }
+
+    
+    public async Task<string> ChooseColor()
+    {
+        var colorSettings = new ColorSettings();
+        
+        var response = await this.httpClient.GetStringAsync($"/colors");
+        Console.WriteLine(response);
+        
+        var colorRange = response.Split('|');
+        return colorSettings.ColorSelection(colorRange);
     }
 
     /// <summary>

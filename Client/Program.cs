@@ -21,7 +21,7 @@ public class Program{
         ts.Welcome();
         var currentSender = await client.ChooseName();
         ts.DotLine();
-        var color = cs.ColorSelection();
+        var color = await client.ChooseColor();
         
         // connect the event handler for the received messages
         client = new ChatClient(currentSender, color, serverUri);
