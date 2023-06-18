@@ -69,8 +69,8 @@ public class ChatClient
             this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
             listResponse = await this.httpClient.GetAsync($"/usedNames?name={this.alias}");
         }
+        Console.Clear();
 
-        Console.WriteLine("");
         return this.alias;
     }
 
