@@ -20,13 +20,11 @@ public class Program
 
         
         // register the client to the server
-        var registerClient = await client.Register();
-        if (registerClient)
+        if (await client.Register())
         {
-                
-            
             // connect to the server and start listening for messages
             var connectTask = await client.Connect();
+            
             var listenTask = client.ListenForMessages();
 
             // query the user for messages to send or the exit command

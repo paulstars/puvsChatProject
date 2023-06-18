@@ -8,7 +8,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9f92d166-e55f-4550-95f6-45d26b7fc873" name="Changes" comment="Singele User works&#10;still exeption if name is already in use" />
+    <list default="true" id="9f92d166-e55f-4550-95f6-45d26b7fc873" name="Changes" comment="GitIgnore">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.puvsBasicHttpChat/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.puvsBasicHttpChat/.idea/indexLayout.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.puvsBasicHttpChat/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.puvsBasicHttpChat/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/ChatClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ChatClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/ChatServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/ChatServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/UserDict.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/UserDict.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -104,7 +113,7 @@
       <workItem from="1686828433347" duration="561000" />
       <workItem from="1686829018290" duration="14729000" />
       <workItem from="1686847125135" duration="13509000" />
-      <workItem from="1687079980147" duration="8267000" />
+      <workItem from="1687079980147" duration="13929000" />
     </task>
     <task id="LOCAL-00001" summary="Rider IDE Initialisiert">
       <created>1686828304437</created>
@@ -176,7 +185,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687088376032</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="GitIgnore">
+      <created>1687088627065</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1687088627065</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -218,7 +234,8 @@
     <MESSAGE value="New idea" />
     <MESSAGE value="userDict updated&#10;changed uKey with name" />
     <MESSAGE value="Singele User works&#10;still exeption if name is already in use" />
-    <option name="LAST_COMMIT_MESSAGE" value="Singele User works&#10;still exeption if name is already in use" />
+    <MESSAGE value="GitIgnore" />
+    <option name="LAST_COMMIT_MESSAGE" value="GitIgnore" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -2,7 +2,11 @@
 <project version="4">
   <component name="UserContentModel">
     <attachedFolders />
-    <explicitIncludes />
+    <explicitIncludes>
+      <Path>.git</Path>
+      <Path>.gitignore</Path>
+      <Path>.idea</Path>
+    </explicitIncludes>
     <explicitExcludes />
   </component>
 </project>

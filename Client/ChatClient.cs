@@ -44,21 +44,18 @@ public class ChatClient
     /// <summary>
     /// Registers this client to the server.
     /// </summary>
-    /// <returns>True if the user could be registered.</returns>
+    /// <returns>True if the user was registered successfully.</returns>
     public async Task<bool> Register()
     {
-        var status = false;
         var response = await this.httpClient.GetFromJsonAsync<Registration>($"/register?id={this.alias}&key={this.key}");
-        Console.WriteLine("\nGOT response!");
-        if (response != null)
-        {
-            Console.WriteLine("\nGOT Key!");
-            Console.WriteLine(response.Key);
-            this.key = response.Key;
-            status = true;
-        }
         
-        return status;
+        // User was not registered if key is '-1' or response is empty
+        if (response == null || response.Key == this.key) return false;
+        
+        // Save the key under which this client is registered
+        this.key = response.Key;
+        
+        return true;
     }
     
     /// <summary>

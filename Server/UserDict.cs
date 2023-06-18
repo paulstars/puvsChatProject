@@ -1,6 +1,4 @@
 
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-
 namespace Server
 {
 
@@ -22,9 +20,11 @@ namespace Server
        /// <returns>Is registered: true or false</returns>
         public bool CheckUser(string name, string uKey)
         {
+            this.logWriter.WriteLogLine($"Try Check User: '{name}' + '{uKey}'!");
+            
             lock (this.obj)
             {
-                if (!this.CheckKey(name)) return false;
+                if (!this.CheckName(name)) return false;
                 this.users.TryGetValue(name, out var value);
                 return value == uKey;
             }
@@ -37,6 +37,8 @@ namespace Server
         /// <returns>Is registered: true or false</returns>
         public bool CheckKey(string uKey)
         {
+            this.logWriter.WriteLogLine($"Try Check Key: '{uKey}' !");
+
             lock (this.obj)
             {
                 // Check if key is default.
@@ -54,6 +56,8 @@ namespace Server
         /// <returns>Is registered: true or false</returns>
         public bool CheckName(string name)
         {
+            this.logWriter.WriteLogLine($"Try Check Name: '{name}' !");
+
             lock (this.obj)
             {
                 return this.users.ContainsKey(name);
@@ -67,17 +71,16 @@ namespace Server
         /// <returns>key - Unique Key of the new user.</returns>
         public string AddUser(string name)
         {
+            this.logWriter.WriteLogLine($"Try Add User: '{name}' !");
             string uKey;
             lock (this.obj)
             {
-                // generate new key
+                // generate new unique key
                 uKey = Guid.NewGuid().ToString();
             
                 // Add new user to dictionary
                 this.users.TryAdd(name, uKey);
             }
-            this.logWriter.WriteLogLine($"Client '{name}' with unique key '{uKey}' registered!");
-
             return uKey;
         }
 
