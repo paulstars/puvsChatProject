@@ -8,15 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9f92d166-e55f-4550-95f6-45d26b7fc873" name="Changes" comment="userDict updated&#10;changed uKey with name">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.puvsBasicHttpChat/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.puvsBasicHttpChat/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/ChatClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ChatClient.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/ChatServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/ChatServer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/LogWriter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/LogWriter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/UserDict.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/UserDict.cs" afterDir="false" />
-    </list>
+    <list default="true" id="9f92d166-e55f-4550-95f6-45d26b7fc873" name="Changes" comment="Singele User works&#10;still exeption if name is already in use" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -46,6 +38,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/20456726229d3ee357e828f8174bacdc1a91389d491c898bd593e51b6e9732/HttpResponseJsonExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9d7564e4d0e58f3393727b246ae48b17f8a9e3670fbe5af23fd52778348e3e8/HttpResponse.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/pauls/Documents/GitHub/puvsChatProject/Client/ChatClient.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/pauls/Documents/GitHub/puvsChatProject/Server/UserDict.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -111,7 +104,7 @@
       <workItem from="1686828433347" duration="561000" />
       <workItem from="1686829018290" duration="14729000" />
       <workItem from="1686847125135" duration="13509000" />
-      <workItem from="1687079980147" duration="7618000" />
+      <workItem from="1687079980147" duration="8267000" />
     </task>
     <task id="LOCAL-00001" summary="Rider IDE Initialisiert">
       <created>1686828304437</created>
@@ -176,7 +169,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687084457807</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Singele User works&#10;still exeption if name is already in use">
+      <created>1687088376032</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1687088376032</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -217,7 +217,8 @@
     <MESSAGE value="hier geht nix" />
     <MESSAGE value="New idea" />
     <MESSAGE value="userDict updated&#10;changed uKey with name" />
-    <option name="LAST_COMMIT_MESSAGE" value="userDict updated&#10;changed uKey with name" />
+    <MESSAGE value="Singele User works&#10;still exeption if name is already in use" />
+    <option name="LAST_COMMIT_MESSAGE" value="Singele User works&#10;still exeption if name is already in use" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
