@@ -5,9 +5,9 @@
 
         public void Welcome()
         {
-            System.Console.WriteLine("Wilkommen im Chat.");
-            System.Console.WriteLine("Erzähle uns zunächst etwas über dich!");
-            System.Console.Write("Name:\t");            
+            Console.WriteLine("Wilkommen im Chat.");
+            Console.WriteLine("Erzähle uns zunächst etwas über dich!");
+            Console.Write("Name:\t");            
         }
 
         public void DotLine()

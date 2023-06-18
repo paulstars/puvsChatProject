@@ -1,6 +1,4 @@
 ﻿using System.Net.Http.Json;
-using System.Text.Json;
-using System.Xml.Linq;
 using Data;
 
 namespace Client;
@@ -30,6 +28,7 @@ public class ChatClient
     /// Initializes a new instance of the <see cref="ChatClient"/> class.
     /// </summary>
     /// <param name="alias">The alias of the user.</param>
+    /// <param name="color">The color of the user</param>
     /// <param name="serverUri">The server URI.</param>
     public ChatClient(string alias,string color, Uri serverUri)
     {
@@ -151,6 +150,7 @@ public class ChatClient
     /// </summary>
     /// <param name="sender">The alias of the sender.</param>
     /// <param name="message">The containing message as text.</param>
+    /// <param name="color">The color of the sender.</param>
     protected virtual void OnMessageReceived(string sender, string message, string color)
     {
         this.MessageReceived?.Invoke(this, new MessageReceivedEventArgs { Sender = sender, Message = message, Color = color });
