@@ -83,11 +83,17 @@ public class ChatClient
     {
         var colorSettings = new ColorSettings();
         
-        var response = await this.httpClient.GetStringAsync($"/colors");
-        Console.WriteLine(response);
+        // get the usable colors from server
+        var responseColors = await this.httpClient.GetStringAsync($"/colors");
         
-        var colorRange = response.Split('|');
-        return colorSettings.ColorSelection(colorRange);
+        // make response string to string array and use it for the color selection
+        var colorRange = responseColors.Split('|');
+        this.color= colorSettings.ColorSelection(colorRange);
+        
+        // post the chosen color to the server
+        var response = await this.httpClient.PostAsJsonAsync("/colors", this.color);
+
+        return this.color;
     }
 
     /// <summary>
@@ -145,6 +151,13 @@ public class ChatClient
             {
                 // catch the cancellation 
                 this.OnMessageReceived("Me", "Leaving the chat", "White");
+                var message = new ChatMessage
+                {
+                    Sender = this.alias, 
+                    Content = "Leaving the chat!", 
+                    Color = this.color
+                };
+                var response = await this.httpClient.PostAsJsonAsync("/leave", message);
                 break;
             }
         }

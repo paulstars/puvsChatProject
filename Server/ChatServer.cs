@@ -25,9 +25,9 @@ public class ChatServer
     private readonly ConcurrentDictionary<string, TaskCompletionSource<ChatMessage>> waitingClients = new();
 
     /// <summary>
-    /// Default array of all available colors
+    /// Default list of all available colors
     /// </summary>
-    private static readonly string[] DefaultColors = {
+    private static readonly List<string> DefaultColors = new List<string>(){
         "darkBlue", "darkGreen", "darkCyan",
         "darkRed", "darkMagenta", "darkYellow",
         "gray", "darkGray", "blue", "green", "cyan",
@@ -60,6 +60,7 @@ public class ChatServer
         app.UseEndpoints(endpoints =>
         {
             
+            // Endpoint that verifies if a name is already used or can be added
             endpoints.MapGet("/names", async context =>
             {
                 context.Request.Query.TryGetValue("name", out var rawName);
@@ -87,9 +88,38 @@ public class ChatServer
             // endpoint to register a color
             endpoints.MapPost("/colors", async context =>
             {
-                context.Request.Query.TryGetValue("color", out var rawColor);
-                var color = rawColor.ToString();
+                var color = await context.Request.ReadFromJsonAsync<string>();
+
+                this.usedColors.Remove(color);
+                context.Response.StatusCode = StatusCodes.Status202Accepted;
+                await context.Response.WriteAsync($"'{color}' erfolgreich registriert!");
+            });
+            
+            // endpoint to remove a user
+            endpoints.MapPost("/leave", async context =>
+            {
+                var message = await context.Request.ReadFromJsonAsync<ChatMessage>();
+
+                if (message == null)
+                {
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    await context.Response.WriteAsync("Message invalid.");
+                }
                 
+                // Check if this user exists and the color is part of default colors
+                if (!this.usedNames.Contains(message.Sender) || !this.usedColors.Contains(message.Color) || !DefaultColors.Contains(message.Color))
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsync("User invalid");
+                }
+
+                // Remove user from usedNames list
+                this.usedNames.Remove(message.Sender);
+                
+                // Add color to the usable colors
+                this.usedColors.Add(message.Color);
+                
+                Console.WriteLine($"Client '{message.Sender}' with color '{message.Color}' removed");
             });
             
             // The endpoint to receive the next message
