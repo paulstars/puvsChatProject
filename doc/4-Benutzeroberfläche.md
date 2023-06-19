@@ -7,16 +7,20 @@ Fügen Sie Funktionen wie automatisches Scrollen und
 Echtzeitaktualisierungen hinzu, um neue Nachrichten ohne manuelles Aktualisieren
 anzuzeigen.
 
-## autosmatisches Scrollen
+## Allgemeine Anmerkung
+Wir haben uns dazu entschieden die allgemeine Oberfläche in diesem Issue anzupassen
 
-Beim Eingang neuer Nachrichten werden diese automatisch fokussiert.
+## Login Prozess
 
-### Zuständig:
+### Zuständig: Lucas Irchin
+
 ### Lösung:
+- Mithife der TextSnippets Klasse ist es möglich alle Text in ihr dynamisch anzupasssen.
+- dies geschieht mit den Methoden: WriteText und DeleteText
+- Dafür wurd alle Texte in Arrays geschrieben, um sie zeilenweise ausgeben zu lassen
 
-## Echtzeitaktualisierung
+- In den Prozessen der Namensauswahl und Farbauswahl wurden Falsche eingaben abgefangen und durch eine änderung der Farbe der Elemente hervorgehoben
+- Neue Eingaben werden daraufhin verlangt
 
-Der Client soll automatisch neue Nachrichten und Nutzerzu- und abgänge anzeigen.
-
-### Zuständig:
-### Lösung:
+- Es können keine leeren NAchrichten mehr versendet werden
+- Bei leerer Eingabe springt der Curser wieder nach oben und es wird nichts versendet
