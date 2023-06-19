@@ -15,6 +15,11 @@ namespace Server;
 public class ChatServer
 {
     /// <summary>
+    /// Writes a log
+    /// </summary>
+    private LogWriter logWriter = new(); 
+    
+    /// <summary>
     /// The message history
     /// </summary>
     private readonly ConcurrentQueue<ChatMessage> messageQueue = new();
@@ -67,21 +72,29 @@ public class ChatServer
                 context.Request.Query.TryGetValue("name", out var rawName);
                 var name = rawName.ToString();
                 
+                this.logWriter.WriteLogLine($"!!GET /names was called by '{name}'!!");
+                
                 if (this.usedNames.Contains(name))
                 {
                     context.Response.StatusCode = StatusCodes.Status406NotAcceptable;
+                    
+                    this.logWriter.WriteLogLine($"\t\t '{name}' was rejected!");
                 }
                 else
                 {
                     // Add new user
                     this.usedNames.Add(name);
                     context.Response.StatusCode = StatusCodes.Status201Created;
+                    
+                    this.logWriter.WriteLogLine($"\t\t '{name}' was added!");
                 }
             });
             
             // endpoint to receive all available colors
             endpoints.MapGet("/colors", async context =>
             {
+                this.logWriter.WriteLogLine("!!GET /colors was called!!");
+
                 var colors = string.Join("|", this.usedColors);
                 await context.Response.WriteAsync(colors);
             });
@@ -90,7 +103,10 @@ public class ChatServer
             endpoints.MapPost("/colors", async context =>
             {
                 var color = await context.Request.ReadFromJsonAsync<string>();
+                
+                this.logWriter.WriteLogLine($"!!POST /colors was called with '{color}'!!");
 
+                // Hier muss was unternommen werden!!!
                 this.usedColors.Remove(color);
                 context.Response.StatusCode = StatusCodes.Status202Accepted;
                 await context.Response.WriteAsync($"'{color}' erfolgreich registriert!");
@@ -99,12 +115,16 @@ public class ChatServer
             // endpoint to remove a user
             endpoints.MapPost("/leave", async context =>
             {
+                this.logWriter.WriteLogLine("!!POST /leave was called!!");
+
                 var message = await context.Request.ReadFromJsonAsync<ChatMessage>();
 
                 if (message == null)
                 {
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
                     await context.Response.WriteAsync("Message invalid.");
+
+                    this.logWriter.WriteLogLine("\t\t Message invalid!");
                 }
                 
                 // Check if this user exists and the color is part of default colors
@@ -112,15 +132,19 @@ public class ChatServer
                 {
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     await context.Response.WriteAsync("User invalid");
+
+                    this.logWriter.WriteLogLine("\t\t User invalid!");
                 }
 
                 // Remove user from usedNames list
                 this.usedNames.Remove(message.Sender);
-                
+                this.logWriter.WriteLogLine($"\t\t Sender '{message.Sender}' removed!");
+
                 // Add color to the usable colors
                 this.usedColors.Add(message.Color);
+                this.logWriter.WriteLogLine($"\t\t Color '{message.Color}' added!");
                 
-                Console.WriteLine($"Client '{message.Sender}' with color '{message.Color}' removed");
+                this.logWriter.WriteLogLine($"Client '{message.Sender}' with color '{message.Color}' removed");
             });
             
             // The endpoint to receive the next message
@@ -135,14 +159,18 @@ public class ChatServer
 
                 var id = rawId.ToString();
                 
+                this.logWriter.WriteLogLine($"!!GET /messages was called with '{id}' and '{color}'!!");
+                
                 // Check if this user exists
                 if (!this.usedNames.Contains(id))
                 {
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     await context.Response.WriteAsync("User invalid");
+
+                    this.logWriter.WriteLogLine($"\t\t User '{id}' invalid!");
                 }
                 
-                Console.WriteLine($"Client '{id}' registered");
+                this.logWriter.WriteLogLine($"\t\t Client '{id}' registered");
                 
                 // register a client to receive the next message
                 var error = true;
@@ -152,13 +180,13 @@ public class ChatServer
                     {
                         if (this.waitingClients.TryRemove(id, out _))
                         {
-                            Console.WriteLine($"Client '{id}' removed from waiting clients");
+                            this.logWriter.WriteLogLine($"\t\t Client '{id}' removed from waiting clients");
                         }
                     }
 
                     if (this.waitingClients.TryAdd(id, tcs))
                     {
-                        Console.WriteLine($"Client '{id}' added to waiting clients");
+                        this.logWriter.WriteLogLine($"\t\t Client '{id}' added to waiting clients");
                         error = false;
                     }
 
@@ -172,6 +200,9 @@ public class ChatServer
                 {
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                     await context.Response.WriteAsync("Internal server error.");
+
+                    this.logWriter.WriteLogLine($"\t\t Internal server error.");
+                    
                 }
 
                 // otherwise wait for the next message broadcast
@@ -200,7 +231,7 @@ public class ChatServer
                         Color = "white"
                     };
 
-                    Console.WriteLine("Zu lange nichts gesendet. Verschicke Warnung");
+                    this.logWriter.WriteLogLine("Zu lange nichts gesendet. Verschicke Warnung");
 
                     // Broadcast der Timeout-Nachricht an alle registrierten Clients
                     lock (lockObject)
@@ -219,7 +250,7 @@ public class ChatServer
                 timer.Stop();
                 timer.Close();
                 
-                Console.WriteLine($"Client '{id}' received message: {message.Content}");
+                this.logWriter.WriteLogLine($"\t\t Client '{id}' received message: {message.Content}");
 
                 // send out the next message
                 await context.Response.WriteAsJsonAsync(message);
@@ -228,21 +259,27 @@ public class ChatServer
             // This endpoint is for sending messages into the chat
             endpoints.MapPost("/messages", async context =>
             {
+                this.logWriter.WriteLogLine("!!POST /messages was called!!");
+
                 var message = await context.Request.ReadFromJsonAsync<ChatMessage>();
 
                 if (message == null)
                 {
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
                     await context.Response.WriteAsync("Message invalid.");
+
+                    this.logWriter.WriteLogLine($"\t\t Message invalid.");
                 }
 
-                Console.WriteLine($"Received message from client: {message!.Content}");
+                this.logWriter.WriteLogLine($"\t\t Received message from '{message!.Sender}': {message!.Content}");
 
                 // Check if this user exists
                 if (!this.usedNames.Contains(message.Sender))
                 {
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     await context.Response.WriteAsync("User invalid");
+
+                    this.logWriter.WriteLogLine($"\t\t User '{message.Sender}' invalid.");
                 }
                 
                 // maintain the chat history
@@ -253,18 +290,19 @@ public class ChatServer
                 {
                     foreach (var (id, client) in this.waitingClients)
                     {
-                        Console.WriteLine($"Broadcasting to client '{id}'");
+                        this.logWriter.WriteLogLine($"\t\t Broadcasting to client '{id}'");
 
                         // possbile memory leak as the 'dead' clients are never removed from the list
                         client.TrySetResult(message);
                     }
                 }
 
-                Console.WriteLine($"Broadcasted message to all clients: {message.Content}");
+                this.logWriter.WriteLogLine($"\t\t Broadcasted message to all clients: {message.Content}");
 
                 // confirm that the new message was successfully processed
                 context.Response.StatusCode = StatusCodes.Status201Created;
                 await context.Response.WriteAsync("Message received and processed.");
+                this.logWriter.WriteLogLine($"\t\t Message received and processed.");
             });
         });
     }
