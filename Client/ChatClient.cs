@@ -84,14 +84,14 @@ public class ChatClient
     
     public async Task<string> ChooseColor()
     {
-        ColorSettings cs = new ColorSettings();
+        var colorSettings = new ColorSettings();
         
         // get the usable colors from server
         var responseColors = await this.httpClient.GetStringAsync($"/colors");
         
         // make response string to string array and use it for the color selection
         var colorRange = responseColors.Split('|');
-        this.color= cs.ColorSelection(colorRange);
+        this.color= colorSettings.ColorSelection(colorRange);
         
         // post the chosen color to the server
         var response = await this.httpClient.PostAsJsonAsync("/colors", this.color);
