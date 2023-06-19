@@ -51,7 +51,7 @@ public class ChatServer
     List<string> usedNames = new List<string>();
 
     /// <summary>
-    /// The lock object for concurrency
+    /// The lock object for message and client concurrency
     /// </summary>
     private readonly object lockObject = new();
 
@@ -77,6 +77,7 @@ public class ChatServer
                 if (this.usedNames.Contains(name))
                 {
                     context.Response.StatusCode = StatusCodes.Status406NotAcceptable;
+                    await context.Response.WriteAsync($"'{name}' was rejected!");
                     
                     this.logWriter.WriteLogLine($"\t\t '{name}' was rejected!");
                 }
@@ -85,6 +86,7 @@ public class ChatServer
                     // Add new user
                     this.usedNames.Add(name);
                     context.Response.StatusCode = StatusCodes.Status201Created;
+                    await context.Response.WriteAsync($"'{name}' was added!");
                     
                     this.logWriter.WriteLogLine($"\t\t '{name}' was added!");
                 }
@@ -94,7 +96,7 @@ public class ChatServer
             endpoints.MapGet("/colors", async context =>
             {
                 this.logWriter.WriteLogLine("!!GET /colors was called!!");
-
+                
                 var colors = string.Join("|", this.useableColors);
                 await context.Response.WriteAsync(colors);
             });
@@ -105,20 +107,22 @@ public class ChatServer
                 var color = await context.Request.ReadFromJsonAsync<string>();
                 
                 this.logWriter.WriteLogLine($"!!POST /colors was called with '{color}'!!");
-
-                if (color == null || !this.useableColors.Contains(color))
+                
+                lock (this.lockObject)
                 {
-                    context.Response.StatusCode = StatusCodes.Status406NotAcceptable;
-                    
-                    this.logWriter.WriteLogLine($"\t\t '{color}' was rejected!");
-                }
-                else
-                {
-                    this.useableColors.Remove(color);
-                    context.Response.StatusCode = StatusCodes.Status202Accepted;
-                    await context.Response.WriteAsync($"'{color}' was registered!");
-                    
-                    this.logWriter.WriteLogLine($"\t\t '{color}' was registered!");
+                    if (color == null || !this.useableColors.Contains(color))
+                    {
+                        context.Response.StatusCode = StatusCodes.Status406NotAcceptable;
+                        
+                        this.logWriter.WriteLogLine($"\t\t '{color}' was rejected!");
+                    }
+                    else
+                    {
+                        this.useableColors.Remove(color);
+                        context.Response.StatusCode = StatusCodes.Status202Accepted;
+                        
+                        this.logWriter.WriteLogLine($"\t\t '{color}' was registered!");
+                    }
                 }
             });
             
@@ -128,11 +132,10 @@ public class ChatServer
                 this.logWriter.WriteLogLine("!!POST /leave was called!!");
 
                 var message = await context.Request.ReadFromJsonAsync<ChatMessage>();
-
+                
                 if (message == null)
                 {
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    await context.Response.WriteAsync("Message invalid.");
 
                     this.logWriter.WriteLogLine("\t\t Message invalid!");
                 }
@@ -140,7 +143,6 @@ public class ChatServer
                 else if (!this.usedNames.Contains(message.Sender) || this.useableColors.Contains(message.Color) || !DefaultColors.Contains(message.Color))
                 {
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    await context.Response.WriteAsync("User or color invalid");
 
                     this.logWriter.WriteLogLine("\t\t User or color invalid!");
                 }
@@ -155,7 +157,6 @@ public class ChatServer
                     this.logWriter.WriteLogLine($"\t\t Color '{message.Color}' added!");
                     
                     context.Response.StatusCode = StatusCodes.Status202Accepted;
-                    await context.Response.WriteAsync("User successfully removed!");
                     this.logWriter.WriteLogLine($"Client '{message.Sender}' with color '{message.Color}' removed");
 
                     // remove Client from waiting clients
@@ -256,7 +257,7 @@ public class ChatServer
                     this.logWriter.WriteLogLine("Zu lange nichts gesendet. Verschicke Warnung");
 
                     // Broadcast der Timeout-Nachricht an alle registrierten Clients
-                    lock (lockObject)
+                    lock (this.lockObject)
                     {
 
                         foreach (var (_, client) in waitingClients)
@@ -295,6 +296,7 @@ public class ChatServer
 
                 this.logWriter.WriteLogLine($"\t\t Received message from '{message!.Sender}': {message!.Content}");
 
+                
                 // Check if this user exists
                 if (!this.usedNames.Contains(message.Sender))
                 {
