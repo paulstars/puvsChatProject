@@ -3,7 +3,7 @@ namespace Client
 {
     internal class ColorSettings
     {
-        TextSnipplets ts = new();
+        private readonly TextSnipplets ts = new  TextSnipplets();
         
         public void SetColor(string selection)
         {
@@ -17,8 +17,19 @@ namespace Client
             }
 
         }
-        public string ColorSelection(string[] colorRange)
+        public string ColorSelection(string[] strings)
         {
+           
+            const string defaultColor = "white";
+            
+                // color source
+                string[] colorRange =
+                    {
+                        "darkBlue", "darkGreen", "darkCyan",
+                        "darkRed", "darkMagenta", "darkYellow",
+                        "gray", "darkGray", "blue", "green", "cyan",
+                        "red", "magenta", "yellow", "white"
+                    };
 
                 var colorDictionary = new Dictionary<string, string>();
                 var ind = 0;
@@ -37,7 +48,7 @@ namespace Client
                     ind++;
                 }
 
-                string? answer;
+                string? input;
                 var first = true;
             
                 // continues till a valid color is given
@@ -48,40 +59,44 @@ namespace Client
                         // Change the text in the first iteration
                         if (first)
                         {
-                            Console.WriteLine("Was ist deine Lieblingsfarbe?");
+                            this.ts.WriteText(1, this.ts.ColorText, defaultColor);
+                            this.ts.WriteText(3, this.ts.ColorField, defaultColor);
+                            
                         }
                         else
                         {
-                            Console.WriteLine("Diese Eingabe ist nicht korrekt!");
-                            Console.WriteLine("Bitte Versuchen Sie es erneut!");
+                            this.ts.WriteText(1, this.ts.ColorError, defaultColor);
+                            this.ts.WriteText(3, this.ts.ColorField, "red");
                         }
-                        this.ts.DotLine();
-                    
+                        
+                        
                         // Displays all available color options
                         for (var i = 0; i < colorRange.Length; i++)
                         {
                             var counter = "0" + i;
+                            Console.SetCursorPosition(Console.WindowWidth/2-7, 7+i);
                             if (counter.Length > 2)
                             {
                                 counter = i.ToString();
                             }
 
-                            this.SetColor(colorRange[i]);
+                            SetColor(colorRange[i]);
                             Console.WriteLine(counter + " " + "■" + " " + colorRange[i]);
-
+                            Thread.Sleep(25);
                         }
                     
                         // input of colorChoice
-                        answer = Console.ReadLine();
+                        Console.SetCursorPosition(Console.WindowWidth / 2 - 1, 4);
+                        input = Console.ReadLine();
                         Console.Clear();
 
 
                         first = false;
-                    } while (answer == null);
-                } while (!colorDictionary.ContainsKey(answer));
+                    } while (input == null);
+                } while (!colorDictionary.ContainsKey(input));
 
                 // get the color from the dictionary
-                colorDictionary.TryGetValue(answer, out var colorChoice);
+                colorDictionary.TryGetValue(input, out var colorChoice);
             
                 return colorChoice!;
         }
