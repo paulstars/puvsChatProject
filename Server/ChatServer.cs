@@ -167,6 +167,7 @@ public class ChatServer
                             this.logWriter.WriteLogLine($"\t\t Client '{message.Sender}' removed from waiting clients");
                         }
                     }
+                    
                 }
             });
 
@@ -298,28 +299,38 @@ public class ChatServer
 
                     this.logWriter.WriteLogLine($"\t\t User '{message.Sender}' invalid.");
                 }
-
-                // maintain the chat history
-                this.messageQueue.Enqueue(message);
-
-                // broadcast the new message to all registered clients
-                lock (this.lockObject)
+                // Check if this color is used
+                else if (this.useableColors.Contains(message.Color))
                 {
-                    foreach (var (id, client) in this.waitingClients)
-                    {
-                        this.logWriter.WriteLogLine($"\t\t Broadcasting to client '{id}'");
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsync("Color invalid");
 
-                        // possbile memory leak as the 'dead' clients are never removed from the list
-                        client.TrySetResult(message);
-                    }
+                    this.logWriter.WriteLogLine($"\t\t Color '{message.Color}' invalid.");
                 }
+                else
+                {
+                    // maintain the chat history
+                    this.messageQueue.Enqueue(message);
 
-                this.logWriter.WriteLogLine($"\t\t Broadcasted message to all clients: {message.Content}");
+                    // broadcast the new message to all registered clients
+                    lock (this.lockObject)
+                    {
+                        foreach (var (id, client) in this.waitingClients)
+                        {
+                            this.logWriter.WriteLogLine($"\t\t Broadcasting to client '{id}'");
 
-                // confirm that the new message was successfully processed
-                context.Response.StatusCode = StatusCodes.Status201Created;
-                await context.Response.WriteAsync("Message received and processed.");
-                this.logWriter.WriteLogLine($"\t\t Message received and processed.");
+                            // possible memory leak as the 'dead' clients are never removed from the list
+                            client.TrySetResult(message);
+                        }
+                    }
+
+                    this.logWriter.WriteLogLine($"\t\t Broadcasted message to all clients: {message.Content}");
+
+                    // confirm that the new message was successfully processed
+                    context.Response.StatusCode = StatusCodes.Status201Created;
+                    await context.Response.WriteAsync("Message received and processed.");
+                    this.logWriter.WriteLogLine($"\t\t Message received and processed.");
+                }
             });
         });
     }

@@ -193,14 +193,22 @@ public class ChatClient
             catch (TaskCanceledException) when (cancellationToken.IsCancellationRequested)
             {
                 // catch the cancellation 
-                this.OnMessageReceived("Me", "Leaving the chat", "White");
+                this.OnMessageReceived(this.alias, "[Hat den Chat verlassen!]", "White");
+                
+                // Leaving message
                 var message = new ChatMessage
                 {
                     Sender = this.alias,
-                    Content = "Leaving the chat!",
+                    Content = "[Hat den Chat verlassen!]",
                     Color = this.color
                 };
+                
+                // send leaving-message to all clients
+                var leaving = await this.httpClient.PostAsJsonAsync("/messages", message);
+                
+                // request leave
                 var response = await this.httpClient.PostAsJsonAsync("/leave", message);
+                
                 break;
             }
         }
