@@ -17,19 +17,6 @@ namespace Client
             
         };
         
-        public string[] WelcomeText2 =
-        {
-            @" _    _      _                            _____                _____ _            _____ _           _   ",
-            @"| |  | |    | |                          |_   _|              |_   _| |          /  __ \ |         | |  ",
-            @"| |  | | ___| | ___ ___  _ __ ___   ___    | | ___    ______    | | | |__   ___  | /  \/ |__   __ _| |_ ",
-            @"| |/\| |/ _ \ |/ __/ _ \| '_ ` _ \ / _ \   | |/ _ \  |______|   | | | '_ \ / _ \ | |   | '_ \ / _` | __|",
-            @"\  /\  /  __/ | (_| (_) | | | | | |  __/   | | (_) |            | | | | | |  __/ | \__/\ | | | (_| | |_  ",
-            @" \/  \/ \___|_|\___\___/|_| |_| |_|\___|   \_/\___/             \_/ |_| |_|\___|  \____/_| |_|\__,_|\__|
-"
-            
-        };
-        
-
         public string[] LoginText =
         {
             @"Bitte Melde dich an."
@@ -48,6 +35,16 @@ namespace Client
         public string[] NameError =
         {
             @"Dieser Name ist bereits vergeben!"
+        };
+        
+        public string[] NameEmpty =
+        {
+            @"Der Name muss mind. ein Buchstaben enthalten!"
+        };
+        
+        public string[] NameToLong =
+        {
+            @"Was meinst du wofür die Box da ist? Dein Name darf sie nicht überschreiten!"
         };
 
         public string[] ColorError =
@@ -78,7 +75,17 @@ namespace Client
             }
         }
         
-        public void WriteText(int startHeight, string[] nameOfText, string color)
+        public void EmptyLine(int line)
+        {
+            Console.SetCursorPosition(0, line);
+            int width = Console.WindowWidth;
+            for (int i = 0; i < width; i++)
+            {
+                Console.Write(" ");
+            }
+        }
+        
+        public void WriteText(int startHeight, string[] nameOfText, string color, bool speed)
         {
             Enum.TryParse(color, true, out ConsoleColor theColor);
             Console.ForegroundColor = theColor;
@@ -88,7 +95,11 @@ namespace Client
             {
                 Console.SetCursorPosition(startWidth,startHeight + i);
                 Console.WriteLine(nameOfText[i]);
-                Thread.Sleep(50);
+                if (!speed)
+                {
+                  Thread.Sleep(50);  
+                }
+                
             }
         
         }

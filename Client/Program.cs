@@ -23,9 +23,9 @@ public class Program {
         Console.WriteLine("Zum starten <Enter> drücken");
         Console.ReadKey();
         Console.Clear();
-        ts.WriteText(1,ts.WelcomeText,defaultColor);
-        ts.WriteText(8, ts.LoginText, defaultColor);
-        ts.WriteText(13, ts.NameField, defaultColor);
+        ts.WriteText(1,ts.WelcomeText,defaultColor,false);
+        ts.WriteText(8, ts.LoginText, defaultColor, false);
+        ts.WriteText(13, ts.NameField, defaultColor, false);
         
         Console.SetCursorPosition(Console.WindowWidth/2-19,14);
         var currentSender = await client.ChooseName();
@@ -35,9 +35,9 @@ public class Program {
         
         var color = await client.ChooseColor();
         
-        ts.WriteText(1, ts.WelcomeText, color);
-        ts.WriteText(8, sender, color);
-        ts.WriteText(10, ts.StartText, defaultColor);
+        ts.WriteText(1, ts.WelcomeText, color, false);
+        ts.WriteText(8, sender, color, false);
+        ts.WriteText(10, ts.StartText, defaultColor, false);
         Console.ReadKey();
         ts.DeleteText(10, ts.StartText, 1);
         Console.SetCursorPosition(0,11);

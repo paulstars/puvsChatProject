@@ -48,13 +48,13 @@ namespace Client
                         // Change the text in the first iteration
                         if (first)
                         {
-                            this.ts.WriteText(1, this.ts.ColorText, defaultColor);
-                            this.ts.WriteText(3, this.ts.ColorField, defaultColor);
+                            this.ts.WriteText(1, this.ts.ColorText, defaultColor, false);
+                            this.ts.WriteText(3, this.ts.ColorField, defaultColor, true);
                         }
                         else
                         {
-                            this.ts.WriteText(1, this.ts.ColorError, defaultColor);
-                            this.ts.WriteText(3, this.ts.ColorField, "red");
+                            this.ts.WriteText(1, this.ts.ColorError, defaultColor, false);
+                            this.ts.WriteText(3, this.ts.ColorField, "red", true);
                         }
                         
                     
