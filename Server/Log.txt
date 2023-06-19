@@ -1,0 +1,30 @@
+!SERVER START!
+
+!!GET /names was called by 'Paul'!!
+		 'Paul' was added!
+!!GET /colors was called!!
+!!POST /colors was called with 'darkBlue'!!
+!!POST /messages was called!!
+		 Received message from 'Paul': Hi, I joined the chat!
+		 Broadcasted message to all clients: Hi, I joined the chat!
+		 Message received and processed.
+!!GET /messages was called with 'Paul' and 'darkBlue'!!
+		 Client 'Paul' registered
+		 Client 'Paul' added to waiting clients
+!!POST /messages was called!!
+		 Received message from 'Paul': Hallo
+		 Broadcasting to client 'Paul'
+		 Client 'Paul' received message: Hallo
+		 Broadcasted message to all clients: Hallo
+		 Message received and processed.
+!!GET /messages was called with 'Paul' and 'darkBlue'!!
+		 Client 'Paul' registered
+		 Client 'Paul' removed from waiting clients
+		 Client 'Paul' added to waiting clients
+!!POST /leave was called!!
+		 User invalid!
+		 Sender 'Paul' removed!
+		 Color 'darkBlue' added!
+Client 'Paul' with color 'darkBlue' removed
+Zu lange nichts gesendet. Verschicke Warnung
+		 Client 'Paul' received message: AFK-Warnung!

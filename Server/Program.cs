@@ -9,6 +9,11 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        // Initialise logWriter to clear the log-file
+        LogWriter logWriter = new();
+        logWriter.ClearLogFile();
+        logWriter.WriteLogLine("!SERVER START!\n");
+        
         // Create the web application
         var builder = WebApplication.CreateBuilder(args);
         var app = builder.Build();

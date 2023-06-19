@@ -7,7 +7,7 @@ namespace Server;
 /// </summary>
 public class LogWriter
 {
-    private static readonly string FilePath = Path.Combine(Directory.GetCurrentDirectory(), "Log.txt");
+    private static readonly string FilePath = Path.Combine(Directory.GetCurrentDirectory(), "../../../Log.txt");
 
     private readonly object log = new();
     
