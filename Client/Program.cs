@@ -59,8 +59,15 @@ public class Program {
         while (true)
         {
             //Console.Write("Geben Sie Ihre Nachricht ein (oder 'exit' zum Beenden): ");
-            var content = Console.ReadLine() ?? string.Empty;
             
+            var content = Console.ReadLine() ?? string.Empty;
+            while (string.IsNullOrWhiteSpace(content))
+            {
+                var left = Console.GetCursorPosition().Left;
+                var top = Console.GetCursorPosition().Top;
+                Console.SetCursorPosition(left, top-1);
+                content = Console.ReadLine() ?? string.Empty; 
+            }
             //Moves the curser up by one, in order to remove the entered Text   
             var cursor = Console.GetCursorPosition();
             Console.SetCursorPosition(0,cursor.Top - 1);
