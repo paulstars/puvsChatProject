@@ -1,6 +1,9 @@
-﻿# Default ignored files
+# Default ignored files
 /shelf/
 /workspace.xml
+/vcs.xml
+/indexLayout.xml
+/.name
 # Rider ignored files
 /.idea.puvsBasicHttpChat.iml
 /projectSettingsUpdater.xml

@@ -2,6 +2,9 @@
 using Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using System.Timers;
+using Timer = System.Timers.Timer;
+
 
 namespace Server;
 
@@ -22,6 +25,26 @@ public class ChatServer
     private readonly ConcurrentDictionary<string, TaskCompletionSource<ChatMessage>> waitingClients = new();
 
     /// <summary>
+    /// Default list of all available colors
+    /// </summary>
+    private static readonly List<string> DefaultColors = new List<string>(){
+        "darkBlue", "darkGreen", "darkCyan",
+        "darkRed", "darkMagenta", "darkYellow",
+        "gray", "darkGray", "blue", "green", "cyan",
+        "red", "magenta", "yellow", "white"
+    };
+    
+    /// <summary>
+    /// List containing all still usable colors
+    /// </summary>
+    List<string> usedColors = new List<string>(DefaultColors);
+    
+    /// <summary>
+    /// List containing all registered names.
+    /// </summary>
+    List<string> usedNames = new List<string>();
+
+    /// <summary>
     /// The lock object for concurrency
     /// </summary>
     private readonly object lockObject = new();
@@ -36,18 +59,90 @@ public class ChatServer
 
         app.UseEndpoints(endpoints =>
         {
-            // The endpoint to register a client to the server to subsequently receive the next message
+            
+            // Endpoint that verifies if a name is already used or can be added
+            endpoints.MapGet("/names", async context =>
+            {
+                context.Request.Query.TryGetValue("name", out var rawName);
+                var name = rawName.ToString();
+                
+                if (this.usedNames.Contains(name))
+                {
+                    context.Response.StatusCode = StatusCodes.Status406NotAcceptable;
+                }
+                else
+                {
+                    // Add new user
+                    this.usedNames.Add(name);
+                    context.Response.StatusCode = StatusCodes.Status201Created;
+                }
+            });
+            
+            // endpoint to receive all available colors
+            endpoints.MapGet("/colors", async context =>
+            {
+                var colors = string.Join("|", this.usedColors);
+                await context.Response.WriteAsync(colors);
+            });
+
+            // endpoint to register a color
+            endpoints.MapPost("/colors", async context =>
+            {
+                var color = await context.Request.ReadFromJsonAsync<string>();
+
+                this.usedColors.Remove(color);
+                context.Response.StatusCode = StatusCodes.Status202Accepted;
+                await context.Response.WriteAsync($"'{color}' erfolgreich registriert!");
+            });
+            
+            // endpoint to remove a user
+            endpoints.MapPost("/leave", async context =>
+            {
+                var message = await context.Request.ReadFromJsonAsync<ChatMessage>();
+
+                if (message == null)
+                {
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    await context.Response.WriteAsync("Message invalid.");
+                }
+                
+                // Check if this user exists and the color is part of default colors
+                if (!this.usedNames.Contains(message.Sender) || !this.usedColors.Contains(message.Color) || !DefaultColors.Contains(message.Color))
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsync("User invalid");
+                }
+
+                // Remove user from usedNames list
+                this.usedNames.Remove(message.Sender);
+                
+                // Add color to the usable colors
+                this.usedColors.Add(message.Color);
+                
+                Console.WriteLine($"Client '{message.Sender}' with color '{message.Color}' removed");
+            });
+            
+            // The endpoint to receive the next message
             // This endpoint utilizes the Long-Running-Requests pattern.
             endpoints.MapGet("/messages", async context =>
             {
                 var tcs = new TaskCompletionSource<ChatMessage>();
+                context.Request.Query.TryGetValue("Color", out var rawColor);
+                string color = rawColor.ToString();
 
                 context.Request.Query.TryGetValue("id", out var rawId);
 
                 var id = rawId.ToString();
-
+                
+                // Check if this user exists
+                if (!this.usedNames.Contains(id))
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsync("User invalid");
+                }
+                
                 Console.WriteLine($"Client '{id}' registered");
-
+                
                 // register a client to receive the next message
                 var error = true;
                 lock (this.lockObject)
@@ -68,6 +163,7 @@ public class ChatServer
 
                     // You could replace all of the above with just one line...
                     //this.waitingClients.AddOrUpdate(id.ToString(), tcs, (_, _) => tcs);
+                    
                 }
 
                 // if anything went wrong send out an error message
@@ -78,8 +174,50 @@ public class ChatServer
                 }
 
                 // otherwise wait for the next message broadcast
+
+                
+                
+                Timer timer = new Timer();
+                timer.Interval = 30000;
+                timer.AutoReset = false;
+                timer.Elapsed += TimeOut;
+                
+                timer.Start();
+                bool timeOut = true;
+                
                 var message = await tcs.Task;
 
+                void TimeOut(object sender, ElapsedEventArgs e)
+                {
+
+                    // Erzeugen Sie eine Nachricht für den Timeout
+
+                    var timeoutMessage = new ChatMessage
+                    {
+                        Sender = "System",
+                        Content = "AFK-Warnung!",
+                        Color = "white"
+                    };
+
+                    Console.WriteLine("Zu lange nichts gesendet. Verschicke Warnung");
+
+                    // Broadcast der Timeout-Nachricht an alle registrierten Clients
+                    lock (lockObject)
+                    {
+
+                        foreach (var (_, client) in waitingClients)
+                        {
+                            // Setzen Sie das Ergebnis der TaskCompletionSource auf die Timeout-Nachricht
+                            client.TrySetResult(timeoutMessage);
+                        }
+                    }
+
+
+                }
+
+                timer.Stop();
+                timer.Close();
+                
                 Console.WriteLine($"Client '{id}' received message: {message.Content}");
 
                 // send out the next message
@@ -99,6 +237,13 @@ public class ChatServer
 
                 Console.WriteLine($"Received message from client: {message!.Content}");
 
+                // Check if this user exists
+                if (!this.usedNames.Contains(message.Sender))
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsync("User invalid");
+                }
+                
                 // maintain the chat history
                 this.messageQueue.Enqueue(message);
 
