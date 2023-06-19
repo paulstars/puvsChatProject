@@ -11,9 +11,12 @@ anzuzeigen.
 
 Beim Eingang neuer Nachrichten werden diese automatisch fokussiert.
 
-Zuständig:
-Lösung:
+### Zuständig:
+### Lösung:
 
 ## Echtzeitaktualisierung
 
 Der Client soll automatisch neue Nachrichten und Nutzerzu- und abgänge anzeigen.
+
+### Zuständig:
+### Lösung:
