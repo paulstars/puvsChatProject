@@ -68,7 +68,7 @@ public class ChatServer
                 
                 if (this.usedNames.Contains(name))
                 {
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    context.Response.StatusCode = StatusCodes.Status406NotAcceptable;
                 }
                 else
                 {
