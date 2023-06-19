@@ -1,10 +1,9 @@
-﻿
-namespace Client
+﻿namespace Client
 {
     internal class ColorSettings
     {
-        private readonly TextSnipplets ts = new  TextSnipplets();
-        
+        private readonly TextSnipplets ts = new TextSnipplets();
+
         public void SetColor(string selection)
         {
             if (Enum.TryParse(selection, true, out ConsoleColor color))
@@ -15,84 +14,82 @@ namespace Client
             {
                 Console.WriteLine("Error: Es scheint sich um keine Farbe zu handeln!");
             }
-
         }
+
         public string ColorSelection(string[] colorRange)
         {
-                const string defaultColor = "white";
-                var colorDictionary = new Dictionary<string, string>();
-                var ind = 0;
-                
-                // builds the dictionary for the colors
-                foreach (var color in colorRange)
-                {
-                    var counter = "0" + ind;
-                    if (counter.Length > 2)
-                    {
-                        counter = ind.ToString();
-                    }
-                    
-                    colorDictionary.Add(counter, color);
+            const string defaultColor = "white";
+            var colorDictionary = new Dictionary<string, string>();
+            var ind = 0;
 
-                    ind++;
+            // builds the dictionary for the colors
+            foreach (var color in colorRange)
+            {
+                var counter = "0" + ind;
+                if (counter.Length > 2)
+                {
+                    counter = ind.ToString();
                 }
 
-                
+                colorDictionary.Add(counter, color);
 
-                string? answer;
-                var first = true;
-            
-                // continues till a valid color is given
+                ind++;
+            }
+
+
+            string? answer;
+            var first = true;
+
+            // continues till a valid color is given
+            do
+            {
                 do
                 {
-                    do
+                    // Change the text in the first iteration
+                    if (first)
                     {
-                        // Change the text in the first iteration
+                        this.ts.WriteText(1, this.ts.ColorText, defaultColor, false);
+                        this.ts.WriteText(3, this.ts.ColorField, defaultColor, true);
+                    }
+                    else
+                    {
+                        this.ts.WriteText(1, this.ts.ColorError, defaultColor, true);
+                        this.ts.WriteText(3, this.ts.ColorField, "red", true);
+                    }
+
+                    // Displays all available color options
+                    for (var i = 0; i < colorRange.Length; i++)
+                    {
+                        var counter = "0" + i;
+                        Console.SetCursorPosition(Console.WindowWidth / 2 - 7, 7 + i);
+                        if (counter.Length > 2)
+                        {
+                            counter = i.ToString();
+                        }
+
+                        SetColor(colorRange[i]);
+                        Console.WriteLine(counter + " " + "■" + " " + colorRange[i]);
                         if (first)
                         {
-                            this.ts.WriteText(1, this.ts.ColorText, defaultColor, false);
-                            this.ts.WriteText(3, this.ts.ColorField, defaultColor, true);
+                            Thread.Sleep(25);
                         }
-                        else
-                        {
-                            this.ts.WriteText(1, this.ts.ColorError, defaultColor, true);
-                            this.ts.WriteText(3, this.ts.ColorField, "red", true);
-                        }
-                        
-                        // Displays all available color options
-                        for (var i = 0; i < colorRange.Length; i++)
-                        {
-                            var counter = "0" + i;
-                            Console.SetCursorPosition(Console.WindowWidth/2-7, 7+i);
-                            if (counter.Length > 2)
-                            {
-                                counter = i.ToString();
-                            }
-    
-                            SetColor(colorRange[i]);
-                            Console.WriteLine(counter + " " + "■" + " " + colorRange[i]);
-                            if (first)
-                            {
-                               Thread.Sleep(25); 
-                            }
-                            
-                        }
+                    }
 
-                        // input of colorChoice
-                        Console.SetCursorPosition(Console.WindowWidth / 2 - 1, 4);
-                        SetColor(defaultColor);
-                        answer = Console.ReadLine();
-                        Console.Clear();
+                    // input of colorChoice
+                    Console.SetCursorPosition(Console.WindowWidth / 2 - 1, 4);
+                    SetColor(defaultColor);
+                    answer = Console.ReadLine();
+                    Console.Clear();
 
 
-                        first = false;
-                    } while (answer == null);
-                } while (!colorDictionary.ContainsKey(answer));
+                    first = false;
+                } while (answer == null);
+            } while (!colorDictionary.ContainsKey(answer));
 
-                // get the color from the dictionary
-                colorDictionary.TryGetValue(answer, out var colorChoice);
-            
-                return colorChoice!;
+            // get the color from the dictionary
+            colorDictionary.TryGetValue(answer, out var colorChoice);
+
+            return colorChoice!;
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿
-
-namespace Server;
+﻿namespace Server;
 
 /// <summary>
 /// Writes lines into log.txt or clears the log-file
@@ -10,7 +8,7 @@ public class LogWriter
     private static readonly string FilePath = Path.Combine(Directory.GetCurrentDirectory(), "../../../Log.txt");
 
     private readonly object log = new();
-    
+
     /// <summary>
     /// Writes the given line into the log-file and the console
     /// </summary>
@@ -22,7 +20,6 @@ public class LogWriter
             using var writer = new StreamWriter(FilePath, true);
             writer.WriteLineAsync($"[{DateTime.Now:HH:mm:ss.fff}]\t" + line);
             Console.WriteLine(line);
-            
         }
     }
 

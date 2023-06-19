@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-
 using Data;
 
 namespace Client;
@@ -19,7 +18,7 @@ public class ChatClient
     /// The alias of the user
     /// </summary>
     private string alias;
-    
+
     /// <summary>
     /// The color of the user
     /// </summary>
@@ -36,13 +35,14 @@ public class ChatClient
     /// <param name="alias">The alias of the user.</param>
     /// <param name="color">The color of the user</param>
     /// <param name="serverUri">The server URI.</param>
-    public ChatClient(string alias,string color, Uri serverUri)
+    public ChatClient(string alias, string color, Uri serverUri)
     {
         this.alias = alias;
         this.color = color;
         this.httpClient = new HttpClient();
         this.httpClient.BaseAddress = serverUri;
     }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ChatClient"/> class.
     /// </summary>
@@ -63,24 +63,24 @@ public class ChatClient
     {
         TextSnipplets ts = new TextSnipplets();
         const string defaultColor = "white";
-        
+
         var left = Console.GetCursorPosition().Left;
         var top = Console.GetCursorPosition().Top;
-        
+
         this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
-        
+
         while (string.IsNullOrWhiteSpace(this.alias) || this.alias.Length > 38 || this.alias.Contains('\t'))
         {
-            ts.EmptyLine(14); 
-            
+            ts.EmptyLine(14);
+
             ts.WriteText(13, ts.NameField, "red", true);
-            
+
             if (this.alias.Contains('\t'))
             {
                 ts.DeleteText(8, ts.NameToLong, 1);
                 ts.WriteText(8, ts.NameNoTab, defaultColor, true);
             }
-            
+
             if (string.IsNullOrWhiteSpace(this.alias))
             {
                 ts.DeleteText(8, ts.NameToLong, 1);
@@ -89,53 +89,53 @@ public class ChatClient
 
             if (this.alias.Length > 38)
             {
-                ts.DeleteText(8, ts.NameEmpty,1);
+                ts.DeleteText(8, ts.NameEmpty, 1);
                 ts.WriteText(8, ts.NameToLong, defaultColor, true);
             }
-            
+
             Console.SetCursorPosition(left, top);
             this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
         }
-        
+
         // Ask server if this name is available
         var listResponse = await this.httpClient.GetAsync($"/names?name={this.alias}");
-    
+
         // Tell the user to pick another name
         while (!listResponse.IsSuccessStatusCode)
         {
             ts.WriteText(8, ts.NameError, defaultColor, false);
             ts.WriteText(13, ts.NameField, "red", true);
-            
-            Console.SetCursorPosition(Console.WindowWidth/2-19,14);
+
+            Console.SetCursorPosition(Console.WindowWidth / 2 - 19, 14);
             this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
             listResponse = await this.httpClient.GetAsync($"/names?name={this.alias}");
         }
+
         Console.Clear();
 
         return this.alias;
     }
 
-    
+
     public async Task<string> ChooseColor()
     {
         var colorSettings = new ColorSettings();
         var responseSuccess = false;
-        
+
         do
         {
             // get the usable colors from server
             var responseColors = await this.httpClient.GetStringAsync($"/colors");
-            
+
             // make response string to string array and use it for the color selection
             var colorRange = responseColors.Split('|');
-            this.color= colorSettings.ColorSelection(colorRange);
-            
+            this.color = colorSettings.ColorSelection(colorRange);
+
             // post the chosen color to the server
             var response = await this.httpClient.PostAsJsonAsync("/colors", this.color);
             responseSuccess = response.IsSuccessStatusCode;
-            
         } while (!responseSuccess);
-        
+
         return this.color;
     }
 
@@ -146,9 +146,9 @@ public class ChatClient
     public async Task<bool> Connect()
     {
         // create and send a welcome message
-        var message = new ChatMessage { Sender = this.alias, Content = $"Hi, I joined the chat!", Color = this.color};
+        var message = new ChatMessage { Sender = this.alias, Content = $"Hi, I joined the chat!", Color = this.color };
         var response = await this.httpClient.PostAsJsonAsync("/messages", message);
- 
+
 
         return response.IsSuccessStatusCode;
     }
@@ -196,8 +196,8 @@ public class ChatClient
                 this.OnMessageReceived("Me", "Leaving the chat", "White");
                 var message = new ChatMessage
                 {
-                    Sender = this.alias, 
-                    Content = "Leaving the chat!", 
+                    Sender = this.alias,
+                    Content = "Leaving the chat!",
                     Color = this.color
                 };
                 var response = await this.httpClient.PostAsJsonAsync("/leave", message);
@@ -212,7 +212,7 @@ public class ChatClient
     public void CancelListeningForMessages()
     {
         // signal the cancellation request
-        this.cancellationTokenSource.Cancel(); 
+        this.cancellationTokenSource.Cancel();
     }
 
     // Enabled the user to receive new messages. The assigned delegated is called when a new message is received.
@@ -226,6 +226,7 @@ public class ChatClient
     /// <param name="color">The color of the sender.</param>
     protected virtual void OnMessageReceived(string sender, string message, string color)
     {
-        this.MessageReceived?.Invoke(this, new MessageReceivedEventArgs { Sender = sender, Message = message, Color = color });
+        this.MessageReceived?.Invoke(this,
+            new MessageReceivedEventArgs { Sender = sender, Message = message, Color = color });
     }
 }

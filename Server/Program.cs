@@ -13,7 +13,7 @@ public class Program
         LogWriter logWriter = new();
         logWriter.ClearLogFile();
         logWriter.WriteLogLine("!SERVER START!\n");
-        
+
         // Create the web application
         var builder = WebApplication.CreateBuilder(args);
         var app = builder.Build();
