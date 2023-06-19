@@ -41,7 +41,7 @@ public class Program {
         Console.ReadKey();
         ts.DeleteText(10, ts.StartText, 1);
         Console.SetCursorPosition(0,11);
-        Console.WriteLine($"Chat vom: {DateTime.Now.ToString().Remove(11,8)}");
+        Console.WriteLine($"Chat vom: {DateTime.Now:HH:mm:ss.fff}");
         Console.SetCursorPosition(0,12);
         ts.CreateChatInterface();
         
@@ -68,7 +68,8 @@ public class Program {
                 Console.SetCursorPosition(left, top-1);
                 content = Console.ReadLine() ?? string.Empty; 
             }
-            //Moves the curser up by one, in order to remove the entered Text   
+            
+            //Moves the cursor up by one, in order to remove the entered Text   
             var cursor = Console.GetCursorPosition();
             Console.SetCursorPosition(0,cursor.Top - 1);
 
@@ -106,7 +107,7 @@ public class Program {
     static void MessageReceivedHandler(object? sender, MessageReceivedEventArgs e)
     {
         var cs = new ColorSettings();
-        var time = DateTime.Now.ToString().Remove(0,11).Remove(5,3);
+        var time = DateTime.Now.ToString("HH:mm");
         Console.Write($"[{time}] ");
         
         cs.SetColor(e.Color);

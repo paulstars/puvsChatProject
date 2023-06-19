@@ -1,30 +1,60 @@
-!SERVER START!
+[20:13:42.838]	!SERVER START!
 
-!!GET /names was called by 'Paul'!!
-		 'Paul' was added!
-!!GET /colors was called!!
-!!POST /colors was called with 'darkBlue'!!
-!!POST /messages was called!!
-		 Received message from 'Paul': Hi, I joined the chat!
-		 Broadcasted message to all clients: Hi, I joined the chat!
-		 Message received and processed.
-!!GET /messages was called with 'Paul' and 'darkBlue'!!
-		 Client 'Paul' registered
-		 Client 'Paul' added to waiting clients
-!!POST /messages was called!!
-		 Received message from 'Paul': Hallo
-		 Broadcasting to client 'Paul'
-		 Client 'Paul' received message: Hallo
-		 Broadcasted message to all clients: Hallo
-		 Message received and processed.
-!!GET /messages was called with 'Paul' and 'darkBlue'!!
-		 Client 'Paul' registered
-		 Client 'Paul' removed from waiting clients
-		 Client 'Paul' added to waiting clients
-!!POST /leave was called!!
-		 User invalid!
-		 Sender 'Paul' removed!
-		 Color 'darkBlue' added!
-Client 'Paul' with color 'darkBlue' removed
-Zu lange nichts gesendet. Verschicke Warnung
-		 Client 'Paul' received message: AFK-Warnung!
+[20:13:57.531]	!!GET /names was called by 'Paul'!!
+[20:13:57.532]			 'Paul' was added!
+[20:13:57.614]	!!GET /colors was called!!
+[20:14:01.176]	!!POST /colors was called with 'darkMagenta'!!
+[20:14:01.177]			 'darkMagenta' was registered!
+[20:14:02.715]	!!POST /messages was called!!
+[20:14:02.744]			 Received message from 'Paul': Hi, I joined the chat!
+[20:14:02.744]			 Broadcasted message to all clients: Hi, I joined the chat!
+[20:14:02.745]			 Message received and processed.
+[20:14:02.750]	!!GET /messages was called with 'Paul' and 'darkMagenta'!!
+[20:14:02.750]			 Client 'Paul' registered
+[20:14:02.750]			 Client 'Paul' added to waiting clients
+[20:14:05.295]	!!POST /messages was called!!
+[20:14:05.297]			 Received message from 'Paul': Hallo
+[20:14:05.298]			 Broadcasting to client 'Paul'
+[20:14:05.298]			 Client 'Paul' received message: Hallo
+[20:14:05.310]			 Broadcasted message to all clients: Hallo
+[20:14:05.311]			 Message received and processed.
+[20:14:05.332]	!!GET /messages was called with 'Paul' and 'darkMagenta'!!
+[20:14:05.333]			 Client 'Paul' registered
+[20:14:05.333]			 Client 'Paul' removed from waiting clients
+[20:14:05.333]			 Client 'Paul' added to waiting clients
+[20:14:07.115]	!!POST /messages was called!!
+[20:14:07.116]			 Received message from 'Paul': sasfd
+[20:14:07.116]			 Broadcasting to client 'Paul'
+[20:14:07.117]			 Client 'Paul' received message: sasfd
+[20:14:07.118]			 Broadcasted message to all clients: sasfd
+[20:14:07.119]			 Message received and processed.
+[20:14:07.119]	!!GET /messages was called with 'Paul' and 'darkMagenta'!!
+[20:14:07.120]			 Client 'Paul' registered
+[20:14:07.120]			 Client 'Paul' removed from waiting clients
+[20:14:07.121]			 Client 'Paul' added to waiting clients
+[20:14:07.857]	!!POST /messages was called!!
+[20:14:07.857]			 Received message from 'Paul': asd
+[20:14:07.858]			 Broadcasting to client 'Paul'
+[20:14:07.858]			 Client 'Paul' received message: asd
+[20:14:07.859]			 Broadcasted message to all clients: asd
+[20:14:07.860]			 Message received and processed.
+[20:14:07.860]	!!GET /messages was called with 'Paul' and 'darkMagenta'!!
+[20:14:07.861]			 Client 'Paul' registered
+[20:14:07.861]			 Client 'Paul' removed from waiting clients
+[20:14:07.861]			 Client 'Paul' added to waiting clients
+[20:14:08.528]	!!POST /messages was called!!
+[20:14:08.529]			 Received message from 'Paul': asd
+[20:14:08.529]			 Broadcasting to client 'Paul'
+[20:14:08.530]			 Client 'Paul' received message: asd
+[20:14:08.531]			 Broadcasted message to all clients: asd
+[20:14:08.532]			 Message received and processed.
+[20:14:08.532]	!!GET /messages was called with 'Paul' and 'darkMagenta'!!
+[20:14:08.533]			 Client 'Paul' registered
+[20:14:08.533]			 Client 'Paul' removed from waiting clients
+[20:14:08.534]			 Client 'Paul' added to waiting clients
+[20:14:12.581]	!!POST /leave was called!!
+[20:14:12.582]			 Sender 'Paul' removed!
+[20:14:12.582]			 Color 'darkMagenta' added!
+[20:14:12.583]	Client 'Paul' with color 'darkMagenta' removed
+[20:14:12.583]			 Client 'Paul' removed from waiting clients
+[20:14:38.548]	Zu lange nichts gesendet. Verschicke Warnung

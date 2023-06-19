@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Json;
 
 using Data;
 
@@ -118,17 +119,23 @@ public class ChatClient
     public async Task<string> ChooseColor()
     {
         var colorSettings = new ColorSettings();
+        var responseSuccess = false;
         
-        // get the usable colors from server
-        var responseColors = await this.httpClient.GetStringAsync($"/colors");
+        do
+        {
+            // get the usable colors from server
+            var responseColors = await this.httpClient.GetStringAsync($"/colors");
+            
+            // make response string to string array and use it for the color selection
+            var colorRange = responseColors.Split('|');
+            this.color= colorSettings.ColorSelection(colorRange);
+            
+            // post the chosen color to the server
+            var response = await this.httpClient.PostAsJsonAsync("/colors", this.color);
+            responseSuccess = response.IsSuccessStatusCode;
+            
+        } while (!responseSuccess);
         
-        // make response string to string array and use it for the color selection
-        var colorRange = responseColors.Split('|');
-        this.color= colorSettings.ColorSelection(colorRange);
-        
-        // post the chosen color to the server
-        var response = await this.httpClient.PostAsJsonAsync("/colors", this.color);
-
         return this.color;
     }
 

@@ -20,8 +20,9 @@ public class LogWriter
         lock (this.log)
         {
             using var writer = new StreamWriter(FilePath, true);
-            writer.WriteLineAsync(line);
+            writer.WriteLineAsync($"[{DateTime.Now:HH:mm:ss.fff}]\t" + line);
             Console.WriteLine(line);
+            
         }
     }
 

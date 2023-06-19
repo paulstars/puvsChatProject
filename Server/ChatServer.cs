@@ -43,7 +43,7 @@ public class ChatServer
     /// <summary>
     /// List containing all still usable colors
     /// </summary>
-    List<string> usedColors = new List<string>(DefaultColors);
+    List<string> useableColors = new List<string>(DefaultColors);
     
     /// <summary>
     /// List containing all registered names.
@@ -95,7 +95,7 @@ public class ChatServer
             {
                 this.logWriter.WriteLogLine("!!GET /colors was called!!");
 
-                var colors = string.Join("|", this.usedColors);
+                var colors = string.Join("|", this.useableColors);
                 await context.Response.WriteAsync(colors);
             });
 
@@ -106,10 +106,20 @@ public class ChatServer
                 
                 this.logWriter.WriteLogLine($"!!POST /colors was called with '{color}'!!");
 
-                // Hier muss was unternommen werden!!!
-                this.usedColors.Remove(color);
-                context.Response.StatusCode = StatusCodes.Status202Accepted;
-                await context.Response.WriteAsync($"'{color}' erfolgreich registriert!");
+                if (color == null || !this.useableColors.Contains(color))
+                {
+                    context.Response.StatusCode = StatusCodes.Status406NotAcceptable;
+                    
+                    this.logWriter.WriteLogLine($"\t\t '{color}' was rejected!");
+                }
+                else
+                {
+                    this.useableColors.Remove(color);
+                    context.Response.StatusCode = StatusCodes.Status202Accepted;
+                    await context.Response.WriteAsync($"'{color}' was registered!");
+                    
+                    this.logWriter.WriteLogLine($"\t\t '{color}' was registered!");
+                }
             });
             
             // endpoint to remove a user
@@ -126,25 +136,37 @@ public class ChatServer
 
                     this.logWriter.WriteLogLine("\t\t Message invalid!");
                 }
-                
                 // Check if this user exists and the color is part of default colors
-                if (!this.usedNames.Contains(message.Sender) || !this.usedColors.Contains(message.Color) || !DefaultColors.Contains(message.Color))
+                else if (!this.usedNames.Contains(message.Sender) || this.useableColors.Contains(message.Color) || !DefaultColors.Contains(message.Color))
                 {
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    await context.Response.WriteAsync("User invalid");
+                    await context.Response.WriteAsync("User or color invalid");
 
-                    this.logWriter.WriteLogLine("\t\t User invalid!");
+                    this.logWriter.WriteLogLine("\t\t User or color invalid!");
                 }
+                else
+                {
+                    // Remove user from usedNames list
+                    this.usedNames.Remove(message.Sender);
+                    this.logWriter.WriteLogLine($"\t\t Sender '{message.Sender}' removed!");
 
-                // Remove user from usedNames list
-                this.usedNames.Remove(message.Sender);
-                this.logWriter.WriteLogLine($"\t\t Sender '{message.Sender}' removed!");
+                    // Add color to the usable colors
+                    this.useableColors.Add(message.Color);
+                    this.logWriter.WriteLogLine($"\t\t Color '{message.Color}' added!");
+                    
+                    context.Response.StatusCode = StatusCodes.Status202Accepted;
+                    await context.Response.WriteAsync("User successfully removed!");
+                    this.logWriter.WriteLogLine($"Client '{message.Sender}' with color '{message.Color}' removed");
 
-                // Add color to the usable colors
-                this.usedColors.Add(message.Color);
-                this.logWriter.WriteLogLine($"\t\t Color '{message.Color}' added!");
-                
-                this.logWriter.WriteLogLine($"Client '{message.Sender}' with color '{message.Color}' removed");
+                    // remove Client from waiting clients
+                    lock (this.lockObject)
+                    {
+                        if (this.waitingClients.TryRemove(message.Sender, out _))
+                        {
+                            this.logWriter.WriteLogLine($"\t\t Client '{message.Sender}' removed from waiting clients");
+                        }
+                    }
+                }
             });
             
             // The endpoint to receive the next message
