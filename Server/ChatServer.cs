@@ -229,36 +229,33 @@ public class ChatServer
 
                 // otherwise wait for the next message broadcast
 
-
+                // if there no new messages after 30 seconds an Ping will be send to remind all waiting clients that they are afk
                 Timer timer = new Timer();
                 timer.Interval = 30000;
                 timer.AutoReset = false;
                 timer.Elapsed += TimeOut;
 
                 timer.Start();
-                bool timeOut = true;
 
                 var message = await tcs.Task;
-
+                
                 void TimeOut(object sender, ElapsedEventArgs e)
                 {
-                    // Erzeugen Sie eine Nachricht für den Timeout
-
+                    // A timeout message is generated
                     var timeoutMessage = new ChatMessage
                     {
                         Sender = "System",
                         Content = "AFK-Warnung!",
                         Color = "white"
                     };
-
+                    
                     this.logWriter.WriteLogLine("Zu lange nichts gesendet. Verschicke Warnung");
 
-                    // Broadcast der Timeout-Nachricht an alle registrierten Clients
+                    // timeout message will be send to every waiting client
                     lock (this.lockObject)
                     {
                         foreach (var (_, client) in waitingClients)
                         {
-                            // Setzen Sie das Ergebnis der TaskCompletionSource auf die Timeout-Nachricht
                             client.TrySetResult(timeoutMessage);
                         }
                     }
