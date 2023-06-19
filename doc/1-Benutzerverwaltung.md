@@ -10,8 +10,9 @@ werden.
 
 Der Nutzer soll nach der Eingabe des Namens eine Farbe auswählen, dies ändert die Farbe des Nutzers im Chat.
 
-Zuständig: Lucas Irchin
-Lösung: Bereitstellung der Ausgabe auf dem Bildschirm. Zuordnung via eingabe eines index (z.B. 00)
+### Zuständig: Lucas Irchin
+### Lösung: 
+  Bereitstellung der Ausgabe auf dem Bildschirm. Zuordnung via eingabe eines index (z.B. 00)
 - Dem Client wird im Anschluss die gewählte Farbe zugeordnet
 - Mit jedem senden einer Nachricht, gibt der Client seine Farbe mit, sodass er in anderen Clients mit dieser Farbe dargestellt werden kann.
 - auch Kleinigkeiten, wie die Überschrift eines jeden Clients erhält jene Farbe 
