@@ -1,6 +1,4 @@
-﻿
-
-namespace Client;
+﻿namespace Client;
 
 /// <summary>
 /// A most basic chat client for the console
@@ -48,7 +46,7 @@ public class Program {
         ts.WriteText(8, sender, color, false);
         ts.WriteText(10, ts.StartText, defaultColor, false);
         
-        // Final key input before loging in
+        // Final key input before logging in
         Console.ReadKey();
         
         // Creating the chat Interface
@@ -64,7 +62,6 @@ public class Program {
         
         
         // connect to the server and start listening for messages
-        var connectTask = await client.Connect();
         var listenTask = client.ListenForMessages();
 
         // query the user for messages to send or the exit command
@@ -78,7 +75,7 @@ public class Program {
                 Console.SetCursorPosition(left, top-1);
                 content = Console.ReadLine() ?? string.Empty; 
             }
-            //Moves the curser up by one, in order to remove the entered Text   
+            //Moves the cursor up by one, in order to remove the entered Text   
             var cursor = Console.GetCursorPosition();
             Console.SetCursorPosition(0,cursor.Top - 1);
 
