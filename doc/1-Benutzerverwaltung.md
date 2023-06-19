@@ -25,6 +25,8 @@ Lösung:
 - MapGet überprüft ob gewählter name in usedNames(List) entahlten ist, wenn nicht wird er hinzugefügt und der response auf Status: 201  gesetzt
 - wenn name nicht enthalten wird Status: 406 zurückgegeben
 - Task "ChooseName" fragt nach einem neuen Namen vom user, so lange der response Status nicht zwischen 200 und 299 liegt
+- beim Verlassen des Chats wird der Name aus der usedNames Liste gelöscht
+- beim Senden einer Nachricht prüft der Server nun ob der Name registriert ist
 
 Anmerkung:
-- Ich habe mich für einen Get entschieden falls wir noch die aktuelle Liste an Usern abfragen wollen.
+- Ich habe mich für einen Get entschieden falls wir später noch die aktuelle Liste an Usern abfragen wollen.
