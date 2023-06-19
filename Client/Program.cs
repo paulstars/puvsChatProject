@@ -20,8 +20,10 @@ public class Program {
         var client = new ChatClient(serverUri);
         
         // query the user for a name
+        Console.WriteLine("Zum starten <Enter> drücken");
         Console.ReadKey();
-        ts.WriteText(1,ts.WelcomeBackText,defaultColor);
+        Console.Clear();
+        ts.WriteText(1,ts.WelcomeText,defaultColor);
         ts.WriteText(8, ts.LoginText, defaultColor);
         ts.WriteText(13, ts.NameField, defaultColor);
         
@@ -33,7 +35,7 @@ public class Program {
         
         var color = await client.ChooseColor();
         
-        ts.WriteText(1, ts.WelcomeBackText, color);
+        ts.WriteText(1, ts.WelcomeText, color);
         ts.WriteText(8, sender, color);
         ts.WriteText(10, ts.StartText, defaultColor);
         Console.ReadKey();
@@ -42,7 +44,7 @@ public class Program {
         Console.WriteLine($"Chat vom: {DateTime.Now.ToString().Remove(11,8)}");
         Console.SetCursorPosition(0,12);
         ts.CreateChatInterface();
-
+        
         // connect the event handler for the received messages
         client = new ChatClient(currentSender, color, serverUri);
         client.MessageReceived += MessageReceivedHandler;
@@ -50,9 +52,7 @@ public class Program {
         
         // connect to the server and start listening for messages
         var connectTask = await client.Connect();
-        Console.WriteLine();
-
-        
+       
         var listenTask = client.ListenForMessages();
 
         // query the user for messages to send or the exit command

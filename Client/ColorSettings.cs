@@ -19,18 +19,7 @@ namespace Client
         }
         public string ColorSelection(string[] strings)
         {
-           
-            const string defaultColor = "white";
-            
-                // color source
-                string[] colorRange =
-                    {
-                        "darkBlue", "darkGreen", "darkCyan",
-                        "darkRed", "darkMagenta", "darkYellow",
-                        "gray", "darkGray", "blue", "green", "cyan",
-                        "red", "magenta", "yellow", "white"
-                    };
-
+                const string defaultColor = "white";
                 var colorDictionary = new Dictionary<string, string>();
                 var ind = 0;
                 
@@ -61,7 +50,6 @@ namespace Client
                         {
                             this.ts.WriteText(1, this.ts.ColorText, defaultColor);
                             this.ts.WriteText(3, this.ts.ColorField, defaultColor);
-                            
                         }
                         else
                         {
@@ -69,7 +57,7 @@ namespace Client
                             this.ts.WriteText(3, this.ts.ColorField, "red");
                         }
                         
-                        
+                    
                         // Displays all available color options
                         for (var i = 0; i < colorRange.Length; i++)
                         {
@@ -87,7 +75,7 @@ namespace Client
                     
                         // input of colorChoice
                         Console.SetCursorPosition(Console.WindowWidth / 2 - 1, 4);
-                        input = Console.ReadLine();
+                        answer = Console.ReadLine();
                         Console.Clear();
 
 

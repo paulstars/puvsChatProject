@@ -26,7 +26,7 @@ Lösung:
 
 ## Nur benötigte Nachrichten
 
-Alle für den Nutzer unätigen Nachrichten werden nicht mehr angezeigt.
+Alle für den Nutzer unötigen Nachrichten werden nicht mehr angezeigt.
 
 Lösung:
 - Datei: Program.cs
