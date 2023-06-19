@@ -46,6 +46,11 @@ namespace Client
         {
             @"Was meinst du wofür die Box da ist? Dein Name darf sie nicht überschreiten!"
         };
+        
+        public string[] NameNoTab =
+        {
+            @"Nutze kein Tabulator in deinem Namen"
+        };
 
         public string[] ColorError =
         {

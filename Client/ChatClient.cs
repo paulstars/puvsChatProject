@@ -68,11 +68,17 @@ public class ChatClient
         
         this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
         
-        while (string.IsNullOrWhiteSpace(this.alias) || this.alias.Length > 38)
+        while (string.IsNullOrWhiteSpace(this.alias) || this.alias.Length > 38 || this.alias.Contains('\t'))
         {
             ts.EmptyLine(14); 
             
             ts.WriteText(13, ts.NameField, "red", true);
+            
+            if (this.alias.Contains('\t'))
+            {
+                ts.DeleteText(8, ts.NameToLong, 1);
+                ts.WriteText(8, ts.NameNoTab, defaultColor, true);
+            }
             
             if (string.IsNullOrWhiteSpace(this.alias))
             {
