@@ -63,15 +63,47 @@ public class ChatClient
         TextSnipplets ts = new TextSnipplets();
         const string defaultColor = "white";
         
+        var left = Console.GetCursorPosition().Left;
+        var top = Console.GetCursorPosition().Top;
+        
         this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
+        
+        while (string.IsNullOrWhiteSpace(this.alias) || this.alias.Length > 38 || this.alias.Contains('\t'))
+        {
+            ts.EmptyLine(14); 
+            
+            ts.WriteText(13, ts.NameField, "red", true);
+            
+            if (this.alias.Contains('\t'))
+            {
+                ts.DeleteText(8, ts.NameToLong, 1);
+                ts.WriteText(8, ts.NameNoTab, defaultColor, true);
+            }
+            
+            if (string.IsNullOrWhiteSpace(this.alias))
+            {
+                ts.DeleteText(8, ts.NameToLong, 1);
+                ts.WriteText(8, ts.NameEmpty, defaultColor, true);
+            }
+
+            if (this.alias.Length > 38)
+            {
+                ts.DeleteText(8, ts.NameEmpty,1);
+                ts.WriteText(8, ts.NameToLong, defaultColor, true);
+            }
+            
+            Console.SetCursorPosition(left, top);
+            this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
+        }
+        
         // Ask server if this name is available
         var listResponse = await this.httpClient.GetAsync($"/names?name={this.alias}");
     
         // Tell the user to pick another name
         while (!listResponse.IsSuccessStatusCode)
         {
-            ts.WriteText(8, ts.NameError, defaultColor);
-            ts.WriteText(13, ts.NameField, "red");
+            ts.WriteText(8, ts.NameError, defaultColor, false);
+            ts.WriteText(13, ts.NameField, "red", true);
             
             Console.SetCursorPosition(Console.WindowWidth/2-19,14);
             this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
