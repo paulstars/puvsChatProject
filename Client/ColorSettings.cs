@@ -1,10 +1,19 @@
 ﻿
 namespace Client
 {
+    /// <summary>
+    /// Collection of classes relating to color selection and changes.<br></br>
+    /// <see cref="SetColor"/><br></br>
+    /// <see cref="ColorSelection"/>
+    /// </summary>
     internal class ColorSettings
     {
-        private readonly TextSnipplets ts = new  TextSnipplets();
+        private readonly TextSnippets ts = new  TextSnippets();
         
+        /// <summary>
+        /// Sets the color of every following Text with a color that correlates with a color from an default array given by the Server
+        /// </summary>
+        /// <param name="selection"> string - Value to select the color of the following Text displays</param>
         public void SetColor(string selection)
         {
             if (Enum.TryParse(selection, true, out ConsoleColor color))
@@ -17,13 +26,19 @@ namespace Client
             }
 
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="colorRange"> string[] - available colors received by the server </param>
+        /// <returns> colorChoice - The color chosen by the user.</returns>
         public string ColorSelection(string[] colorRange)
         {
-                const string defaultColor = "white";
+            const string defaultColor = "white";
                 var colorDictionary = new Dictionary<string, string>();
                 var ind = 0;
                 
-                // builds the dictionary for the colors
+                // Builds the dictionary for the colors. Using an Index to create following structure: ("00","darkBlue")
                 foreach (var color in colorRange)
                 {
                     var counter = "0" + ind;
@@ -31,14 +46,10 @@ namespace Client
                     {
                         counter = ind.ToString();
                     }
-                    
                     colorDictionary.Add(counter, color);
-
                     ind++;
                 }
-
                 
-
                 string? answer;
                 var first = true;
             
@@ -47,7 +58,7 @@ namespace Client
                 {
                     do
                     {
-                        // Change the text in the first iteration
+                        // Change the text in the first iteration.
                         if (first)
                         {
                             this.ts.WriteText(1, this.ts.ColorText, defaultColor, false);
@@ -59,7 +70,7 @@ namespace Client
                             this.ts.WriteText(3, this.ts.ColorField, "red", true);
                         }
                         
-                        // Displays all available color options
+                        // Displays all available color options.
                         for (var i = 0; i < colorRange.Length; i++)
                         {
                             var counter = "0" + i;
@@ -69,7 +80,7 @@ namespace Client
                                 counter = i.ToString();
                             }
     
-                            SetColor(colorRange[i]);
+                            this.SetColor(colorRange[i]);
                             Console.WriteLine(counter + " " + "■" + " " + colorRange[i]);
                             if (first)
                             {
@@ -78,9 +89,9 @@ namespace Client
                             
                         }
 
-                        // input of colorChoice
+                        // Set the input of colorChoice
                         Console.SetCursorPosition(Console.WindowWidth / 2 - 1, 4);
-                        SetColor(defaultColor);
+                        this.SetColor(defaultColor);
                         answer = Console.ReadLine();
                         Console.Clear();
 
