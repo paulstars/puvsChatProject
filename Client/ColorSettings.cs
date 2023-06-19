@@ -17,7 +17,7 @@ namespace Client
             }
 
         }
-        public string ColorSelection(string[] strings)
+        public string ColorSelection(string[] colorRange)
         {
                 const string defaultColor = "white";
                 var colorDictionary = new Dictionary<string, string>();
@@ -37,7 +37,7 @@ namespace Client
                     ind++;
                 }
 
-                string? input;
+                string? answer;
                 var first = true;
             
                 // continues till a valid color is given
@@ -80,11 +80,11 @@ namespace Client
 
 
                         first = false;
-                    } while (input == null);
-                } while (!colorDictionary.ContainsKey(input));
+                    } while (answer == null);
+                } while (!colorDictionary.ContainsKey(answer));
 
                 // get the color from the dictionary
-                colorDictionary.TryGetValue(input, out var colorChoice);
+                colorDictionary.TryGetValue(answer, out var colorChoice);
             
                 return colorChoice!;
         }
