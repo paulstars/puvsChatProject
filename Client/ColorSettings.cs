@@ -13,7 +13,7 @@ namespace Client
             }
             else
             {
-                Console.WriteLine("Error: Es scheint sich um keine Farbe zuhandeln");
+                Console.WriteLine("Error: Es scheint sich um keine Farbe zu handeln!");
             }
 
         }
@@ -37,6 +37,8 @@ namespace Client
                     ind++;
                 }
 
+                
+
                 string? answer;
                 var first = true;
             
@@ -53,11 +55,10 @@ namespace Client
                         }
                         else
                         {
-                            this.ts.WriteText(1, this.ts.ColorError, defaultColor, false);
+                            this.ts.WriteText(1, this.ts.ColorError, defaultColor, true);
                             this.ts.WriteText(3, this.ts.ColorField, "red", true);
                         }
                         
-                    
                         // Displays all available color options
                         for (var i = 0; i < colorRange.Length; i++)
                         {
@@ -67,14 +68,19 @@ namespace Client
                             {
                                 counter = i.ToString();
                             }
-
+    
                             SetColor(colorRange[i]);
                             Console.WriteLine(counter + " " + "■" + " " + colorRange[i]);
-                            Thread.Sleep(25);
+                            if (first)
+                            {
+                               Thread.Sleep(25); 
+                            }
+                            
                         }
-                    
+
                         // input of colorChoice
                         Console.SetCursorPosition(Console.WindowWidth / 2 - 1, 4);
+                        SetColor(defaultColor);
                         answer = Console.ReadLine();
                         Console.Clear();
 

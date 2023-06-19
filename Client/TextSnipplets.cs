@@ -49,7 +49,7 @@ namespace Client
 
         public string[] ColorError =
         {
-            @"Bitte nutze zur Auswahl die abgebildeten Zahlen."
+            @"Bitte nutze zur Auswahl nur die abgebildeten Zahlen."
         };
         
         public string[] NameField =
