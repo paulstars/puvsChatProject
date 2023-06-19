@@ -15,7 +15,7 @@ namespace Client
         /// Text: A big Heading for the title Screen. <br></br>
         /// To display use <see cref="WriteText"/>
         /// </summary>
-        public string[] WelcomeText =
+        public readonly string[] WelcomeText =
         {
             @" _    _ _ _ _ _                                          _             _____ _           _   ",
             @"| |  | (_) | | |                                        (_)           /  __ \ |         | |  ",
@@ -30,7 +30,7 @@ namespace Client
         ///  Text: Tell the user to login with his name. <br></br>
         /// To display use <see cref="WriteText"/>
         /// </summary>
-        public string[] LoginText =
+        public readonly string[] LoginText =
         {
             @"Bitte Melde dich an."
         };
@@ -39,7 +39,7 @@ namespace Client
         /// Text: Tell the user to choose a color.<br></br>
         /// To display use <see cref="WriteText"/>
         /// </summary>
-        public string[] ColorText =
+        public readonly string[] ColorText =
         {
             @"Bitte wähle eine Farbe aus."
         };
@@ -48,7 +48,7 @@ namespace Client
         /// Text: A final confirmation before the Chat starts.<br></br>
         /// To display use <see cref="WriteText"/>
         /// </summary>
-        public string[] StartText =
+        public readonly string[] StartText =
         {
             @"Drücke beliebige Taste, um fortzufahren..."
         };
@@ -57,7 +57,7 @@ namespace Client
         /// Displays a big Box. <br></br>
         /// To display use <see cref="WriteText"/>
         /// </summary>
-        public string[] NameField =
+        public readonly string[] NameField =
         {
             @"+─────────[Gib deinen Namen ein]─────────+",
             @"│                                        │",
@@ -68,7 +68,7 @@ namespace Client
         /// Displays a small Box.<br></br>
         /// To display use <see cref="WriteText"/>
         /// </summary>
-        public string[] ColorField =
+        public readonly string[] ColorField =
         {
             @"+────+",
             @"│    │",
@@ -79,7 +79,7 @@ namespace Client
         /// Error message for: Entered name already exists. <br></br>
         /// To display use <see cref="WriteText"/>
         /// </summary>
-        public string[] NameError =
+        public readonly string[] NameError =
         {
             @"Dieser Name ist bereits vergeben!"
         };
@@ -88,7 +88,7 @@ namespace Client
         /// Error message for: Entered name is empty.<br></br>
         /// To display use <see cref="WriteText"/>
         /// </summary>
-        public string[] NameEmpty =
+        public readonly string[] NameEmpty =
         {
             @"Der Name muss mind. ein Buchstaben enthalten!"
         };
@@ -97,7 +97,7 @@ namespace Client
         /// Error message for: Entered name is longer than the set value in <see cref="ChatClient.ChooseName"/><br></br>
         /// To display use <see cref="WriteText"/>
         /// </summary>
-        public string[] NameToLong =
+        public readonly string[] NameToLong =
         {
             @"Was meinst du wofür die Box da ist? Dein Name darf sie nicht überschreiten!"
         };
@@ -106,7 +106,7 @@ namespace Client
         /// Error message for: Entered name consists of /t.<br></br>
         /// To display use <see cref="WriteText"/>
         /// </summary>
-        public string[] NameNoTab =
+        public readonly string[] NameNoTab =
         {
             @"Nutze kein Tabulator in deinem Namen"
         };
@@ -115,7 +115,7 @@ namespace Client
         /// Error message for: There was no value entered which correlates with a color from an array given by the Server.<br></br>
         /// To display use <see cref="WriteText"/>
         /// </summary>        
-        public string[] ColorError =
+        public readonly string[] ColorError =
         {
             @"Bitte nutze zur Auswahl nur die abgebildeten Zahlen."
         };
