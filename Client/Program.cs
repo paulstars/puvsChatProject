@@ -9,7 +9,7 @@ public class Program {
 
     public static async Task Main(string[] args)
     {
-        var ts = new TextSnipplets();
+        var ts = new TextSnippets();
         var cs = new ColorSettings();
         
         const string defaultColor = "white";
@@ -19,26 +19,39 @@ public class Program {
         // create a new client
         var client = new ChatClient(serverUri);
         
-        // query the user for a name
+        // Press any key to start the application
         Console.WriteLine("Zum starten <Enter> drücken");
         Console.ReadKey();
         Console.Clear();
+        
+        // Creates a main menu. User ist requested to enter name. Displaying: Title, Guiding Text, Input box
         ts.WriteText(1,ts.WelcomeText,defaultColor,false);
         ts.WriteText(8, ts.LoginText, defaultColor, false);
         ts.WriteText(13, ts.NameField, defaultColor, false);
         
+        // User can insert name in created input box. Checking if user name is valid
         Console.SetCursorPosition(Console.WindowWidth/2-19,14);
         var currentSender = await client.ChooseName();
+        
+        // writing name in an array for later display
         string[] sender = { $"< {currentSender} >" };
+        
+        // Deletes Guiding Text and input box
         ts.DeleteText(8,ts.LoginText, 1);
         ts.DeleteText(13, ts.NameField,3 );
         
+        // Starts the process of choosing a color. Creates: Input Box, Guiding Text, Available Colors
         var color = await client.ChooseColor();
         
+        // Displays a new main menu using the name and the chosen color by the user.
         ts.WriteText(1, ts.WelcomeText, color, false);
         ts.WriteText(8, sender, color, false);
         ts.WriteText(10, ts.StartText, defaultColor, false);
+        
+        // Final key input before loging in
         Console.ReadKey();
+        
+        // Creating the chat Interface
         ts.DeleteText(10, ts.StartText, 1);
         Console.SetCursorPosition(0,11);
         Console.WriteLine($"Chat vom: {DateTime.Now.ToString().Remove(11,8)}");
@@ -52,14 +65,11 @@ public class Program {
         
         // connect to the server and start listening for messages
         var connectTask = await client.Connect();
-       
         var listenTask = client.ListenForMessages();
 
         // query the user for messages to send or the exit command
         while (true)
         {
-            //Console.Write("Geben Sie Ihre Nachricht ein (oder 'exit' zum Beenden): ");
-            
             var content = Console.ReadLine() ?? string.Empty;
             while (string.IsNullOrWhiteSpace(content))
             {
@@ -79,14 +89,8 @@ public class Program {
                 break;
             }
 
-            //Console.WriteLine($"Sending message: {content}");
-
             // send the message and display the result
-            if (await client.SendMessage(content))
-            {
-                //Console.WriteLine("Message sent successfully.");
-            }
-            else
+            if (!await client.SendMessage(content))
             {
                 Console.WriteLine("Failed to send message.");
             }
