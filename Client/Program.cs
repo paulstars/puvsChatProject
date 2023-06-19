@@ -39,7 +39,7 @@ public class Program
         Console.ReadKey();
         ts.DeleteText(10, ts.StartText, 1);
         Console.SetCursorPosition(0, 11);
-        Console.WriteLine($"Chat vom: {DateTime.Now:HH:mm:ss.fff}");
+        Console.WriteLine($"Chat vom: {DateTime.Now:dd.MM.yyyy}");
         Console.SetCursorPosition(0, 12);
         ts.CreateChatInterface();
 
