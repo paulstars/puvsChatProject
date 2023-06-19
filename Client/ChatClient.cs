@@ -60,7 +60,8 @@ public class ChatClient
     /// <returns>alias - Name of the user.</returns>
     public async Task<string> ChooseName()
     {
-        
+        TextSnipplets ts = new TextSnipplets();
+        const string defaultColor = "white";
         this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
         // Ask server if this name is available
         var listResponse = await this.httpClient.GetAsync($"/names?name={this.alias}");
@@ -68,8 +69,10 @@ public class ChatClient
         // Tell the user to pick another name
         while (!listResponse.IsSuccessStatusCode)
         {
-            Console.WriteLine("Dieser Name ist bereits vorhanden, bitte wähle einen Anderen.");
-            Console.Write("Name:\t");
+            ts.WriteText(8, ts.NameError, defaultColor);
+            ts.WriteText(13, ts.NameField, "red");
+            
+            Console.SetCursorPosition(Console.WindowWidth/2-19,14);
             this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
             listResponse = await this.httpClient.GetAsync($"/names?name={this.alias}");
         }

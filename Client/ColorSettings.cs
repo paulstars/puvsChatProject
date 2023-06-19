@@ -19,7 +19,7 @@ namespace Client
         }
         public string ColorSelection(string[] colorRange)
         {
-
+                const string defaultColor = "white";
                 var colorDictionary = new Dictionary<string, string>();
                 var ind = 0;
                 
@@ -48,19 +48,21 @@ namespace Client
                         // Change the text in the first iteration
                         if (first)
                         {
-                            Console.WriteLine("Was ist deine Lieblingsfarbe?");
+                            this.ts.WriteText(1, this.ts.ColorText, defaultColor);
+                            this.ts.WriteText(3, this.ts.ColorField, defaultColor);
                         }
                         else
                         {
-                            Console.WriteLine("Diese Eingabe ist nicht korrekt!");
-                            Console.WriteLine("Bitte Versuchen Sie es erneut!");
+                            this.ts.WriteText(1, this.ts.ColorError, defaultColor);
+                            this.ts.WriteText(3, this.ts.ColorField, "red");
                         }
-                        this.ts.DotLine();
+                        
                     
                         // Displays all available color options
                         for (var i = 0; i < colorRange.Length; i++)
                         {
                             var counter = "0" + i;
+                            Console.SetCursorPosition(Console.WindowWidth/2-7, 7+i);
                             if (counter.Length > 2)
                             {
                                 counter = i.ToString();
@@ -68,10 +70,12 @@ namespace Client
 
                             this.SetColor(colorRange[i]);
                             Console.WriteLine(counter + " " + "■" + " " + colorRange[i]);
+                            Thread.Sleep(25);
 
                         }
                     
                         // input of colorChoice
+                        Console.SetCursorPosition(Console.WindowWidth / 2 - 1, 4);
                         answer = Console.ReadLine();
                         Console.Clear();
 

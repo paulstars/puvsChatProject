@@ -11,6 +11,7 @@ public class Program{
     {
         TextSnipplets ts = new TextSnipplets();
         ColorSettings cs = new ColorSettings();
+        const string defaultColor = "white";
 
         var serverUri = new Uri("http://localhost:5000");
         
@@ -18,10 +19,28 @@ public class Program{
         var client = new ChatClient(serverUri);
         
         // query the user for a name
-        ts.Welcome();
+        Console.ReadKey();
+        ts.WriteText(1,ts.WelcomeBackText,defaultColor);
+        ts.WriteText(8, ts.LoginText, defaultColor);
+        ts.WriteText(13, ts.NameField, defaultColor);
+        
+        Console.SetCursorPosition(Console.WindowWidth/2-19,14);
         var currentSender = await client.ChooseName();
-        ts.DotLine();
+        string[] sender = { $"< {currentSender} >" };
+        ts.DeleteText(8,ts.LoginText, 1);
+        ts.DeleteText(13, ts.NameField,3 );
+        
         var color = await client.ChooseColor();
+        
+        ts.WriteText(1, ts.WelcomeBackText, color);
+        ts.WriteText(8, sender, color);
+        ts.WriteText(10, ts.StartText, defaultColor);
+        Console.ReadKey();
+        ts.DeleteText(10, ts.StartText, 1);
+        Console.SetCursorPosition(0,11);
+        Console.WriteLine($"Chat vom: {DateTime.Now.ToString().Remove(11,8)}");
+        Console.SetCursorPosition(0,12);
+        ts.CreateChatInterface();
         
         // connect the event handler for the received messages
         client = new ChatClient(currentSender, color, serverUri);
@@ -30,11 +49,7 @@ public class Program{
         
         // connect to the server and start listening for messages
         var connectTask = await client.Connect();
-        
-        ts.HaveFun(color, currentSender);
-        Console.WriteLine();
-
-        
+       
         var listenTask = client.ListenForMessages();
 
         // query the user for messages to send or the exit command
