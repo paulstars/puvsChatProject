@@ -61,7 +61,7 @@ public class ChatClient
     /// <returns>alias - Name of the user.</returns>
     public async Task<string> ChooseName()
     {
-        TextSnipplets ts = new TextSnipplets();
+        var ts = new TextSnippets();
         const string defaultColor = "white";
 
         var left = Console.GetCursorPosition().Left;
