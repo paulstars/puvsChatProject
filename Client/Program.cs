@@ -19,8 +19,10 @@ public class Program{
         var client = new ChatClient(serverUri);
         
         // query the user for a name
+        Console.WriteLine("Zum starten <Enter> drücken");
         Console.ReadKey();
-        ts.WriteText(1,ts.WelcomeBackText,defaultColor);
+        Console.Clear();
+        ts.WriteText(1,ts.WelcomeText,defaultColor);
         ts.WriteText(8, ts.LoginText, defaultColor);
         ts.WriteText(13, ts.NameField, defaultColor);
         
@@ -32,7 +34,7 @@ public class Program{
         
         var color = await client.ChooseColor();
         
-        ts.WriteText(1, ts.WelcomeBackText, color);
+        ts.WriteText(1, ts.WelcomeText, color);
         ts.WriteText(8, sender, color);
         ts.WriteText(10, ts.StartText, defaultColor);
         Console.ReadKey();

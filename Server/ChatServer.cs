@@ -31,7 +31,8 @@ public class ChatServer
         "darkBlue", "darkGreen", "darkCyan",
         "darkRed", "darkMagenta", "darkYellow",
         "gray", "darkGray", "blue", "green", "cyan",
-        "red", "magenta", "yellow", "white"
+        "red", "magenta", "yellow"
+        
     };
     
     /// <summary>

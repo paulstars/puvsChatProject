@@ -62,6 +62,7 @@ public class ChatClient
     {
         TextSnipplets ts = new TextSnipplets();
         const string defaultColor = "white";
+        
         this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
         // Ask server if this name is available
         var listResponse = await this.httpClient.GetAsync($"/names?name={this.alias}");
