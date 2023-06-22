@@ -16,7 +16,7 @@ public class Program
         var serverUri = new Uri("http://localhost:5000");
         
         // create a new client
-        var client = new ChatClient(serverUri);
+        var client = new ChatClient("-1","-1",serverUri);
         
         // Press any key to start the application
         Console.WriteLine("Zum starten <Enter> drücken");

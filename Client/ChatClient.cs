@@ -38,20 +38,7 @@ public class ChatClient
     public ChatClient(string alias, string color, Uri serverUri)
     {
         this.alias = alias;
-        //***neu***
         this.color = color;
-        this.httpClient = new HttpClient();
-        this.httpClient.BaseAddress = serverUri;
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ChatClient"/> class.
-    /// </summary>
-    /// <param name="serverUri">The server URI.</param>
-    public ChatClient(Uri serverUri)
-    {
-        this.alias = "-1";
-        this.color = "-1";
         this.httpClient = new HttpClient();
         this.httpClient.BaseAddress = serverUri;
     }
@@ -65,13 +52,12 @@ public class ChatClient
         var ts = new TextSnippets();
         const string defaultColor = "white";
 
-        // Get cursor position
         var left = Console.GetCursorPosition().Left;
         var top = Console.GetCursorPosition().Top;
 
         this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
 
-        // Renders wrong-name screen 
+        // Renders "wrong-name" screen 
         while (string.IsNullOrWhiteSpace(this.alias) || this.alias.Length > 38 || this.alias.Contains('\t'))
         {
             ts.EmptyLine(14);
