@@ -82,6 +82,8 @@ namespace Client
     
                             this.SetColor(colorRange[i]);
                             Console.WriteLine(counter + " " + "■" + " " + colorRange[i]);
+                            
+                            // Renders first display slower
                             if (first)
                             {
                                Thread.Sleep(25); 

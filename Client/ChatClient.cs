@@ -38,6 +38,7 @@ public class ChatClient
     public ChatClient(string alias, string color, Uri serverUri)
     {
         this.alias = alias;
+        //***neu***
         this.color = color;
         this.httpClient = new HttpClient();
         this.httpClient.BaseAddress = serverUri;
@@ -64,15 +65,18 @@ public class ChatClient
         var ts = new TextSnippets();
         const string defaultColor = "white";
 
+        // Get cursor position
         var left = Console.GetCursorPosition().Left;
         var top = Console.GetCursorPosition().Top;
 
         this.alias = Console.ReadLine() ?? Guid.NewGuid().ToString();
 
+        // Renders wrong-name screen 
         while (string.IsNullOrWhiteSpace(this.alias) || this.alias.Length > 38 || this.alias.Contains('\t'))
         {
             ts.EmptyLine(14);
 
+            // Writes error-name box
             ts.WriteText(13, ts.NameField, "red", true);
 
             if (this.alias.Contains('\t'))
@@ -116,7 +120,10 @@ public class ChatClient
         return this.alias;
     }
 
-
+    /// <summary>
+    /// Lets the user choose a color
+    /// </summary>
+    /// <returns></returns>
     public async Task<string> ChooseColor()
     {
         var colorSettings = new ColorSettings();

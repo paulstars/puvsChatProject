@@ -10,7 +10,6 @@ public class Program
     public static async Task Main(string[] args)
     {
         var ts = new TextSnippets();
-        var cs = new ColorSettings();
         
         const string defaultColor = "white";
         
