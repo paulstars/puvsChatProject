@@ -56,9 +56,7 @@ namespace Client
                 // continues till a valid color is given
                 do
                 {
-                    do
-                    {
-                        // Change the text in the first iteration.
+                    // Change the text in the first iteration.
                         if (first)
                         {
                             this.ts.WriteText(1, this.ts.ColorText, defaultColor, false);
@@ -99,8 +97,8 @@ namespace Client
 
 
                         first = false;
-                    } while (answer == null);
-                } while (!colorDictionary.ContainsKey(answer));
+                        
+                } while (answer != null && !colorDictionary.ContainsKey(answer));
 
                 // get the color from the dictionary
                 colorDictionary.TryGetValue(answer, out var colorChoice);
