@@ -97,8 +97,7 @@ namespace Client
 
 
                         first = false;
-                        
-                } while (answer != null && !colorDictionary.ContainsKey(answer));
+                } while (!colorDictionary.ContainsKey(answer));
 
                 // get the color from the dictionary
                 colorDictionary.TryGetValue(answer, out var colorChoice);
